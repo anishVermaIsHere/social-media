@@ -9,6 +9,7 @@ import { tokenVerify } from "../../../middlewares/tokenverify.js";
 
 const postRouter=Router();
 postRouter.post('/', tokenVerify, uploadOnServer.single('image'), uploadOnCloud, validator(postSchema), postController.create);
+postRouter.get('/', postController.get);
 
 
 export default postRouter;

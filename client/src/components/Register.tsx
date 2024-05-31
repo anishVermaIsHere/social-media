@@ -182,7 +182,7 @@ export default function Register() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={NavLink} to={ROUTES.LOGIN} variant="body2">
+                <Link component={NavLink} to={ROUTES.HOME} variant="body2">
                   Already a member? Login
                 </Link>
               </Grid>

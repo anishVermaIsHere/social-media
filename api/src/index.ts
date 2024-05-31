@@ -35,7 +35,7 @@ app.use('/api/v1/post', postRouter);
 
 const server = app.listen(process.env.SERVER_PORT || 5000, () => {
   const { port } = server.address() as AddressInfo;
-  console.log("***** Social Media Server started at port *****", port);
+  console.log(`***** Social Media Server started at port ${port} *****`);
   dbConnection();
   cloudinaryConnection();
 });

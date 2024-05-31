@@ -46,6 +46,7 @@ export const userController= {
                         email: user.email,
                         gender: user.gender,
                         accessToken: accessToken,
+                        refreshToken: refreshToken,
                         id: user._id
                     });
                 } else {

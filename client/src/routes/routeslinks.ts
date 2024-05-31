@@ -2,8 +2,8 @@
 export const ROUTES={
     /* pubic routes */ 
     HOME:'/',
-    LOGIN:'/user/login',
-    REGISTER:'/user/register',
+    LOGIN:'/login',
+    REGISTER:'/register',
     ABOUT:'/about',
 
     /* protected routes */

@@ -3,7 +3,7 @@ import { ISnackBar } from "../../shared/interfaces/miscalleneous";
 
 const initialState: ISnackBar = {
     message: "", 
-    type:"", // due to throws an error during setting the null value in capitilize.js thats here we assigning an empty string 
+    type:"success", // due to throws an error during setting the null value in capitilize.js thats here we assigning an empty string 
     open:false
 }
 
@@ -15,7 +15,7 @@ const snackBar = createSlice({
             state.message=action.payload.snackMessage;
             state.type=action.payload.snackType;
             state.open=action.payload.snackOpen;
-          return state;
+            return state;
         }
     }
 })

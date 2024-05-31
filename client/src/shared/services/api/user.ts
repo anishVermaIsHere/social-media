@@ -1,20 +1,24 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import axiosInstance from '../interceptor';
 import { IUserCreate, IUserLogin } from '../../../modules/user/interfaces';
 
-const axiosInstance=axios.create({
-    baseURL:`${import.meta.env.VITE_BASE_URL}/api/v1/user`,
-    headers: {
-        "Content-Type": "application/json",
-        "timeout" : 3000
-    },
-});
+interface IErrorResponse {
+    message: string
+}
+
+const URL='/api/v1/user'
 
 const userAPI={
     async register(user: IUserCreate): Promise<AxiosResponse>{
-        return await axiosInstance.post('/new',user);
+        try {
+            return await axiosInstance.post(`${URL}/new`,user);
+        } catch (error) {
+            const err = error as AxiosError<IErrorResponse>;
+            throw new Error(err.response?.data.message);
+        }
     },
     async login(user: IUserLogin): Promise<AxiosResponse>{
-        return await axiosInstance.post('/',user);        
+        return await axiosInstance.post(`${URL}/`,user);        
     }
 };
 

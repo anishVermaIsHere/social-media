@@ -22,6 +22,7 @@ import { IAuth } from '@/shared/interfaces/miscalleneous';
 import { alphabets } from '@/shared/constants';
 import { handleLogout } from '@/redux/slices/auth';
 import { useAppDispatch } from '@/redux/store/store';
+import { handleSnackBar } from '@/redux/slices/snackbar';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -94,6 +95,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   };
 
   const logout=()=>{
+    dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: "Logging out..." }));
     dispatch(handleLogout());
     handleMenuClose();
   }
@@ -237,6 +239,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
                 </Badge>
               </IconButton>
               <IconButton
+              href=''
               size="large"
               edge="end"
               aria-label="account of current user"
@@ -250,6 +253,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
+                href=''
                 size="large"
                 aria-label="show more"
                 aria-controls={mobileMenuId}

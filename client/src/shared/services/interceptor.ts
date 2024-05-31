@@ -1,12 +1,18 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse} from "axios";
+import { parsePersistedData } from "../parse.util";
+
+const axiosInstance=axios.create({
+    baseURL: import.meta.env.VITE_BASE_URL,
+});
 
 export function interceptor() {
-    axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-    const requestInterceptor = axios.interceptors.request.use(
+    axiosInstance.interceptors.request.use(
         (request: InternalAxiosRequestConfig) => {
-            const localData= localStorage.getItem("user-info")||'{}';
-            if (localData!== null) {
-                const accessToken = JSON.parse(localData).accessToken;
+            const auth=localStorage.getItem("persist:auth") || '{}';
+            request.headers["User-Agent"] = window.navigator.userAgent;
+            if (auth!== null) {
+                const parsedData=parsePersistedData(JSON.parse(auth));
+                const accessToken = parsedData.accessToken;
                 request.headers["Authorization"]=`Bearer ${accessToken}`;
              }
             
@@ -16,7 +22,7 @@ export function interceptor() {
             return Promise.reject(err);
         }
     );
-    const responseInterceptor = axios.interceptors.response.use(
+    axiosInstance.interceptors.response.use(
         (response: AxiosResponse) => {
             return response;
         },
@@ -26,3 +32,5 @@ export function interceptor() {
     );
 
 }
+
+export default axiosInstance;

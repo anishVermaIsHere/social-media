@@ -9,7 +9,7 @@ import { handleAuth, handleLogout } from "@/redux/slices/auth.ts";
 
 
 function App() {
-  const auth = useAppSelector((state) => state.authSlice);
+  const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const localAuth = JSON.parse(localStorage.getItem("user-info") || "{}");
   

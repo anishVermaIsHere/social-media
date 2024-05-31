@@ -9,12 +9,15 @@ const{ CREATE }=HTTP_CODES;
 export const postController={
     async create(req: Request<{}, CreatePostType["body"]>, res: Response){
         try {
-            const post=req.body;
+            const post={
+                ...req.body,
+                tags: req.body.tags.split(',')
+            };
             console.log('post',post);
-            // const postDoc=await PostModel.create(post);
-            // if(postDoc&&postDoc._id){
-            //     return res.status(CREATE).json({message:resMessage.readMessage('post','create')});
-            // }
+            const postDoc=await PostModel.create(post);
+            if(postDoc&&postDoc._id){
+                return res.status(CREATE).json({message:resMessage.readMessage('post','create'), statusCode: CREATE });
+            }
         } catch (error: any) {
             console.log('API: post creation error',error.message);
             throw new Error(error.message);

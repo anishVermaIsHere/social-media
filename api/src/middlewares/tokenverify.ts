@@ -16,7 +16,7 @@ export const tokenVerify=(req: Request,res: Response, next: NextFunction)=>{
             res.status(UNAUTHORIZE).json({message:resMessage.readMessage("user","unauthorize")});
         }
     } catch (error) {
-        throw new ApiError(RESOURCE_NOT_FOUND,"Token not found");
+        throw new ApiError(RESOURCE_NOT_FOUND, "Token not found");
     }
     
 }

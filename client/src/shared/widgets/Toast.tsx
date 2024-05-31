@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/store/store';
 import { handleSnackBar } from '../../redux/slices/snackbar';
 
 const Toast = () => {
-  const { open, type, message }=useAppSelector(state=>state.snackBar);
+  const { open, type, message }=useAppSelector(state=>state.snackbar); 
   const dispatch=useAppDispatch();
 
   const snackBarClose = () => {
