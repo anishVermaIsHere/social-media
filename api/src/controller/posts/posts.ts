@@ -3,15 +3,16 @@ import PostModel from '../../database/models/post.js';
 import { HTTP_CODES } from '../../shared/constants/constant.js';
 import resMessage from '../../shared/i18n/msgreader.js';
 import { CreatePostType } from '../../shared/validation/posts.js';
+import { TRequestAuth } from '../../shared/utils/token/token.js';
 
-const{ CREATE }=HTTP_CODES;
+const{ CREATE, SUCCESS }=HTTP_CODES;
 
 export const postController={
     async create(req: Request<{}, CreatePostType["body"]>, res: Response){
         try {
             const post={
                 ...req.body,
-                tags: req.body.tags.split(',')
+                tags: req.body.tags.split(',').map((tag: string)=>tag.trim())
             };
             console.log('post',post);
             const postDoc=await PostModel.create(post);
@@ -25,9 +26,11 @@ export const postController={
     },
     async get(req: Request,res: Response){
         try {
-            const userId=req.params.id;
+            const decode=(<TRequestAuth>req)["decode"];
+            const userId=decode.id;
             if(userId){
-                await PostModel.find({})
+                const result= await PostModel.find();
+                return res.status(SUCCESS).json(result);
             }
         } catch (error) {
             

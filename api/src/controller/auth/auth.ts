@@ -8,7 +8,7 @@ import { CreateUserType, LoginUserType } from '../../shared/validation/user.js';
 
 const { UNPROCESSABLE,CREATE,SUCCESS,RESOURCE_NOT_FOUND,CONFLICT }=HTTP_CODES;
 
-export const userController= {
+export const authController= {
     async register(req: Request<CreateUserType["body"]>,res:Response){
         const user=req.body;
         try {
@@ -59,6 +59,15 @@ export const userController= {
 
         } catch (error:any) {
             console.log('API: login error',error.message);
+        }
+    },
+    async refreshToken(req: Request, res: Response){
+        try {
+            const token=req.headers.authorization?.split(' ')[1];
+            
+            
+        } catch (error) {
+            
         }
     }
     // async find(req,res){

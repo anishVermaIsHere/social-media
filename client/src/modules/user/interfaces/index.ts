@@ -12,3 +12,16 @@ export interface IUserLogin {
     email: string;
     password: string;
 }
+
+export interface IPost {
+    _id: string;
+    _v: number;
+    title: string;
+    content: string;
+    image: string;
+    tags: string[];
+    comments: any[];
+    createdAt: string;
+    updatedAt: string;
+
+}

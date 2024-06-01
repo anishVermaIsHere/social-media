@@ -19,10 +19,10 @@ import FeedIcon from '@mui/icons-material/Feed';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import UserProfile from '@/shared/widgets/UserProfile';
 import { IAuth } from '@/shared/interfaces/miscalleneous';
-import { alphabets } from '@/shared/constants';
 import { handleLogout } from '@/redux/slices/auth';
 import { useAppDispatch } from '@/redux/store/store';
 import { handleSnackBar } from '@/redux/slices/snackbar';
+import { getNameFirstLetter } from '@/shared/name.util';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -40,10 +40,6 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-
-const getfirstLetter=(letter:string)=>{
-  return alphabets.filter(item => (item.letter)?.toLowerCase() === letter?.toLowerCase())[0];
-}
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -248,7 +244,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
               onClick={handleProfileMenuOpen}
               color="inherit"
               >
-                <UserProfile name={getfirstLetter(userFirstLetter)}/>
+                <UserProfile name={getNameFirstLetter(userFirstLetter)}/>
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
