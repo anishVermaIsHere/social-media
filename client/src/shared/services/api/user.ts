@@ -6,7 +6,7 @@ interface IErrorResponse {
     message: string
 }
 
-const URL='/api/v1/user'
+const URL='/api/v1/auth'
 
 const userAPI={
     async register(user: IUserCreate): Promise<AxiosResponse>{

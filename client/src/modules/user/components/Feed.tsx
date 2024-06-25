@@ -1,9 +1,10 @@
-import { Grid, Typography} from "@mui/material";
+import { Grid } from "@mui/material";
 import Item from "../../../components/Item";
 import PostCard from '../../posts/components/PostCard';
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/shared/widgets/Spinner";
 import postAPI from "@/shared/services/api/post";
+import AlertCard from "@/shared/widgets/AlertCard";
 
 
 
@@ -19,9 +20,7 @@ const Feed = () => {
     return <Grid item xs={12} md={9}><Spinner /></Grid>
   }
   if(isError) {
-    return <Grid>
-      <Typography component="p">{error.message}</Typography>
-      </Grid>;
+    return <AlertCard message={error.message} severity="error" />
   }
   return (
     <>

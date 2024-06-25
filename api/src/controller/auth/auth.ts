@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import UserModel from '../../database/models/user.js';
 import { HTTP_CODES } from '../../shared/constants/constant.js';
 import resMessage from '../../shared/i18n/msgreader.js';
@@ -64,8 +64,7 @@ export const authController= {
     async refreshToken(req: Request, res: Response){
         try {
             const token=req.headers.authorization?.split(' ')[1];
-            
-            
+                         
         } catch (error) {
             
         }

@@ -13,17 +13,17 @@ export function interceptor() {
         const parsedData=parsePersistedData(JSON.parse(auth));
         return parsedData;
     }
-    const getRefreshToken=()=>{
-        const auth=getAuth();
-        try {
-            if(auth.refreshToken){
+    // const getRefreshToken=()=>{
+    //     const auth=getAuth();
+    //     try {
+    //         if(auth.refreshToken){
                 
-            }
-        } catch (error) {
-            throw new Error('Logout');
-        }
+    //         }
+    //     } catch (error) {
+    //         throw new Error('Logout');
+    //     }
       
-    };
+    // };
 
     axiosInstance.interceptors.request.use(
         (request: InternalAxiosRequestConfig) => {
@@ -42,7 +42,6 @@ export function interceptor() {
     );
     axiosInstance.interceptors.response.use(
         (response: AxiosResponse) => {
-            console.log('response',response)
             return response;
         },
         (err) => {

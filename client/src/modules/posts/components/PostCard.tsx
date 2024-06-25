@@ -4,7 +4,6 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Link from '@mui/material/Link';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
@@ -61,7 +60,7 @@ export default function PostCard(post: IPost) {
         <Typography variant="body2" color="text.secondary">
           {content}
         </Typography>
-        {tags.map((tag, index)=><Link key={index}>{tag}</Link>)}
+        {tags.map((tag, index)=><Link key={index} style={{ marginRight: '0.4rem'}}>#{tag}</Link>)}
       </CardContent>
     </Card>
     </Grid> 
