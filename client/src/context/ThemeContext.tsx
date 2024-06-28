@@ -1,6 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { deepPurple, teal, indigo } from "@mui/material/colors";
+import { teal, indigo } from "@mui/material/colors";
 
 const defaultTheme = createTheme({
   typography: {
@@ -26,8 +26,8 @@ const defaultTheme = createTheme({
 
 export const ThemeContext = createContext({});
 
-export default function ThemeDataProvider({ children }) {
-  const [theme, setTheme] = useState(defaultTheme);
+export default function ThemeDataProvider({ children }: { children: ReactNode }) {
+  const [theme] = useState(defaultTheme);
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }

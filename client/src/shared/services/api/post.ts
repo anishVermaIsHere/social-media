@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import axiosInstance from '../interceptor';
+import axiosInstance from '../AxiosInterceptor';
 
 const URL='/api/v1/post'
 

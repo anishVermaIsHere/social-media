@@ -1,27 +1,32 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 
-export interface IMessageReader {
+interface IMessageReader {
   message: string | null;
   readMessageFile: () => void;
   readMessage: (key1: string, key2: string) => string;
 }
-
-export interface IEncrypt {
+interface IEncrypt {
   SALT: number;
   hashPassword: (plainPassword: string) => string;
   comparePassword: (plainPassword: string, dbPassword: string) => boolean;
 }
 
-export interface IToken {
+interface IToken {
   tokenEncode: (payload: {email: string; firstName:string; id: string; }) => { accessToken: string; refreshToken: string};
-  tokenDecode: (token: string, req?: Request<any>) => boolean;
+  tokenDecode: (token: string, tokenType: string, req?: Request<any> ) => boolean;
 }
-
-export interface IUser {
+interface IUser {
   firstName: string;
   lastName: string;
   gender: string;
   email: string;
   password: string;
   refreshToken: string;
+}
+
+export {
+  IMessageReader,
+  IEncrypt,
+  IToken,
+  IUser
 }

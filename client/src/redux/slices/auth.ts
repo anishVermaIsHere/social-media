@@ -43,6 +43,10 @@ const authSlice = createSlice({
       }
       return state;
     },
+    handleAccessToken(state, action){
+      state.accessToken = action.payload.accessToken;
+      return state;
+    },
     handleLogout(state) {
       window.location.href = ROUTES.HOME;
       localStorage.removeItem("persist:auth");
@@ -50,7 +54,8 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.firstName = "";
       state.lastName = "";
-      (state.gender = ""), (state.email = "");
+      state.gender = "", 
+      state.email = "";
       state.accessToken = "";
       state.refreshToken = "";
       return state;
@@ -58,5 +63,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { handleAuth, handleLogout } = authSlice.actions;
+export const { handleAuth, handleAccessToken, handleLogout } = authSlice.actions;
 export default authSlice.reducer;

@@ -20,7 +20,7 @@ export const postController={
                 return res.status(CREATE).json({message:resMessage.readMessage('post','create'), statusCode: CREATE });
             }
         } catch (error: any) {
-            console.log('API: post creation error',error.message);
+            console.log('API: error while post creation', error.message);
             throw new Error(error.message);
         }
     },
@@ -29,11 +29,12 @@ export const postController={
             const decode=(<TRequestAuth>req)["decode"];
             const userId=decode.id;
             if(userId){
-                const result= await PostModel.find();
+                const result= await PostModel.find().sort({ createdAt: -1});
                 return res.status(SUCCESS).json(result);
             }
-        } catch (error) {
-            
+        } catch (error:any) {
+            console.log('API: error while fetching posts',error.message);
+            throw new Error(error.message);
         }
     },
     // async delete(req,res){

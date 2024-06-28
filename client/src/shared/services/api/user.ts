@@ -1,24 +1,16 @@
-import { AxiosError, AxiosResponse } from 'axios';
-import axiosInstance from '../interceptor';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../AxiosInterceptor';
 import { IUserCreate, IUserLogin } from '../../../modules/user/interfaces';
 
-interface IErrorResponse {
-    message: string
-}
 
 const URL='/api/v1/auth'
 
 const userAPI={
     async register(user: IUserCreate): Promise<AxiosResponse>{
-        try {
-            return await axiosInstance.post(`${URL}/new`,user);
-        } catch (error) {
-            const err = error as AxiosError<IErrorResponse>;
-            throw new Error(err.response?.data.message);
-        }
+        return await axiosInstance.post(`${URL}/new`, user);
     },
     async login(user: IUserLogin): Promise<AxiosResponse>{
-        return await axiosInstance.post(`${URL}/`,user);        
+        return await axiosInstance.post(`${URL}/`, user);        
     }
 };
 

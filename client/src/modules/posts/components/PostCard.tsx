@@ -39,7 +39,7 @@ export default function PostCard(post: IPost) {
       />
       <CardMedia
         component="img"
-        height="250"
+        height="350"
         image={image}
         alt={title}
       />

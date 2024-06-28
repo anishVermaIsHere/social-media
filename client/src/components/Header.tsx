@@ -206,7 +206,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            Social Media
+            2 Post
           </Typography>
           <Search>
             <SearchIconWrapper>

@@ -13,7 +13,6 @@ const Feed = () => {
     queryKey: ['posts'],
     queryFn: async() => await postAPI.fetch(),
   });
-  console.log('data', data);
   const posts=data?.data;
 
   if(isPending){
@@ -27,7 +26,7 @@ const Feed = () => {
        <Grid item xs={12} md={9}>
           <Item>
           <Grid container spacing={2}>
-              {posts.map((post: any)=><PostCard key={post._id} {...post} />)}
+              {posts?.map((post: any)=><PostCard key={post._id} {...post} />)}
           </Grid>
           </Item>
         </Grid>

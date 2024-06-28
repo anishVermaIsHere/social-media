@@ -41,6 +41,7 @@ export default function Login() {
   const onSubmit: SubmitHandler<Schema> = async (data: Schema) => {
     setLoading(true);
     const res = await userAPI.login(data);
+
     if (res.status === 200) {
       dispatch(handleAuth(res.data));
       navigate(`/user/${ROUTES.FEEDS}`);
@@ -56,8 +57,8 @@ export default function Login() {
       dispatch(
         handleSnackBar({
           snackOpen: true,
-          snackType: "warning",
-          snackMessage: res.data.message,
+          snackType: "error",
+          snackMessage: 'Invalid credentials',
         })
       );
       setLoading(false);
