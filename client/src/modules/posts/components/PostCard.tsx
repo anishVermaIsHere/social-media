@@ -26,7 +26,7 @@ export default function PostCard(post: IPost) {
       <CardHeader
         sx={{textAlign:'left'}}
         avatar={
-          <UserAvatar name={getNameFirstLetter('David')} />
+            <UserAvatar name={getNameFirstLetter('David')} /> 
         }
         action={
           <IconButton aria-label="settings">
@@ -35,7 +35,6 @@ export default function PostCard(post: IPost) {
         }
         title={title}
         subheader={dayjs(createdAt).format('MMM DD, YYYY')}
-        
       />
       <CardMedia
         component="img"

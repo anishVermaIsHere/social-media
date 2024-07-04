@@ -1,5 +1,5 @@
 
-const UserAvatar= ({ name }:{ name: { letter: string, bgColor: string } }) => {
+const UserAvatar = ({ name }:{ name: { letter: string, bgColor: string } }) => {
     return (
         <div style={{
             height:'30px',

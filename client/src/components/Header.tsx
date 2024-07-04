@@ -24,6 +24,8 @@ import { useAppDispatch } from '@/redux/store/store';
 import { handleSnackBar } from '@/redux/slices/snackbar';
 import { getNameFirstLetter } from '@/shared/name.util';
 
+
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -69,7 +71,6 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState< null| HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState< null| HTMLElement>(null);
-  const userFirstLetter=auth?.firstName?.substring(0,1);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -94,7 +95,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
     dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: "Logging out..." }));
     dispatch(handleLogout());
     handleMenuClose();
-  }
+  };
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -244,7 +245,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
               onClick={handleProfileMenuOpen}
               color="inherit"
               >
-                <UserProfile name={getNameFirstLetter(userFirstLetter)}/>
+                <UserProfile name={getNameFirstLetter(auth?.firstName)}/>
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

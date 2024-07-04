@@ -1,5 +1,6 @@
 import { alphabets } from "./constants";
 
-export const getNameFirstLetter=(letter:string)=>{
-    return alphabets.filter((item: {letter: string, bgColor: string}) => (item.letter)?.toLowerCase() === letter?.toLowerCase())[0];
+export const getNameFirstLetter=(name:string)=>{
+    const firstLetter = name.charAt(0).toLowerCase();
+    return alphabets.filter((item: {letter: string, bgColor: string}) => (item.letter)?.toLowerCase() === firstLetter)[0];
 }

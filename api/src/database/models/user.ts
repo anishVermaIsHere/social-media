@@ -14,7 +14,6 @@ const userSchema = new Schema<IUser>(
     gender: { type: String, enum: GENDER },
     email: { type: String, required: [true, "Please provide email"] },
     password: { type: String, required: [true, "Please provide password"] },
-    refreshToken: { type: String },
   },
   { timestamps: true }
 );
