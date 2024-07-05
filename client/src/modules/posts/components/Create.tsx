@@ -2,8 +2,6 @@ import { useRef, ChangeEvent } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import AddIcon from '@mui/icons-material/Add';
-// import RemoveIcon from '@mui/icons-material/Remove';
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { postSchema } from "../../../shared/validation/post";
 import {

@@ -43,7 +43,6 @@ const Profile = () => {
             >
               <CardMedia
                 component="img"
-                // image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrMMzyU03K6-Gfto9jn7FrNN_ix4IYLVDkdw&s"
                 image="https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/385fdc07-325d-49f4-b941-2d39634f1cdb/2876b1ae-c518-416a-9b1f-0dadd6fa45bb.png"
                 alt="profile pic"
               />
