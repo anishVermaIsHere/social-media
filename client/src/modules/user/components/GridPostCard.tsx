@@ -39,7 +39,7 @@ export default function GridPostCard(post: any) {
           </IconButton>
         <OptionMenu open={open} anchorEl={anchorEl} handleClose={handleClose} postId={post._id} />
         
-        <CardMedia sx={{ height: 250 }} image={post.image} title={post.title} />
+        <CardMedia sx={{ height: 180 }} image={post.image} title={post.title} />
       </Card>
     </NavLink>
     </>

@@ -33,7 +33,7 @@ export default function PostCard(post: IPost) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={title}
+        title={'David Paul'}
         subheader={dayjs(createdAt).format('MMM DD, YYYY')}
       />
       <CardMedia

@@ -21,8 +21,8 @@ const Profile = () => {
   const posts=data?.data;
 
   const user={
-    followers: 78143453,
-    following: 3563,
+    followers: 753,
+    following: 49,
   }
 
 
@@ -35,7 +35,6 @@ const Profile = () => {
   
   return (
     <>
-      <Grid item xs={12} md={9} p={2}>
         <Grid container sx={{ display: "flex", justifyContent: "center" }}>
           <Grid item xs={3} md={2} lg={3} xl={2}>
             <Card
@@ -68,14 +67,13 @@ const Profile = () => {
         <Typography mt={4} px={5} variant="body2">POSTS</Typography>
         <Divider sx={{my: 1}} />
         <Grid container>
-          {posts.length ? posts?.map((post: any)=><Grid key={post?._id} item xs={12} sm={6} md={4}>
+          {posts.length ? posts?.map((post: any)=><Grid key={post?._id} item xs={12} sm={4} md={4}>
             <GridPostCard {...post} />
           </Grid>)
           :
           <NoData message="No posts..." />
           }
         </Grid>
-      </Grid>
     </>
   );
 };
