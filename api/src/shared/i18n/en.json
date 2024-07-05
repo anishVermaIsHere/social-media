@@ -1,7 +1,7 @@
 {
     "user":{
         "hi" :"Hi, ",
-        "invalid":"Invalid email or password",
+        "invalid":"Invalid credentials",
         "register":"User registered successfully",
         "registerfail":"Registration failed",
         "exist":"Email already exist",

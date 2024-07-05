@@ -15,7 +15,7 @@ const snackBar = createSlice({
             state.message=action.payload.snackMessage;
             state.type=action.payload.snackType;
             state.open=action.payload.snackOpen;
-          return state;
+            return state;
         }
     }
 })

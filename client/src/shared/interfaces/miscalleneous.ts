@@ -1,7 +1,7 @@
 
 export interface ISnackBar {
     message: string;
-    type:string; 
+    type: 'error' | 'info' | 'success' | 'warning' | '' ; 
     open:boolean;
 }
 
@@ -14,6 +14,7 @@ export interface IAuth {
     gender: string;
     image:string,
     accessToken: string,
+    refreshToken: string,
     message: string,
     error: ''
 }

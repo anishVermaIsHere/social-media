@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req: Request, file: Express.Multer.File, cb: FileNameCallback) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    console.log('name====', file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     return cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });

@@ -1,20 +1,16 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../AxiosInterceptor';
 import { IUserCreate, IUserLogin } from '../../../modules/user/interfaces';
 
-const axiosInstance=axios.create({
-    baseURL:`${import.meta.env.VITE_BASE_URL}/api/v1/user`,
-    headers: {
-        "Content-Type": "application/json",
-        "timeout" : 3000
-    },
-});
+
+const URL='/api/v1/auth'
 
 const userAPI={
     async register(user: IUserCreate): Promise<AxiosResponse>{
-        return await axiosInstance.post('/new',user);
+        return await axiosInstance.post(`${URL}/new`, user);
     },
     async login(user: IUserLogin): Promise<AxiosResponse>{
-        return await axiosInstance.post('/',user);        
+        return await axiosInstance.post(`${URL}/`, user);        
     }
 };
 

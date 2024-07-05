@@ -4,7 +4,6 @@ import { HTTP_CODES } from "../shared/constants/constant.js";
 
 
 const validator =(schema: AnyZodObject) =>(req: Request, res: Response, next: NextFunction) => {
-  console.log('body', req.body)
     try {
       schema.parse({
         body: req.body,

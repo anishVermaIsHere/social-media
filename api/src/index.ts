@@ -7,6 +7,7 @@ import { dbConnection } from "./config/db/connect.js";
 import publicRouter from "./config/routes/public.js";
 import { AddressInfo } from "net";
 import postRouter from "./config/routes/private/posts.js";
+import authRouter from "./config/routes/private/auth.js";
 import { cloudinaryConnection } from "./config/cloudinary.js";
 
 const app: Express = express();
@@ -30,12 +31,13 @@ app.get("/", (_: Request, res: Response) =>
   })
 );
 
-app.use("/api/v1/user", publicRouter);
+app.use("/api/v1/auth", publicRouter);
+app.use("/api/v1/auth", authRouter);
 app.use('/api/v1/post', postRouter);
 
 const server = app.listen(process.env.SERVER_PORT || 5000, () => {
   const { port } = server.address() as AddressInfo;
-  console.log("***** Social Media Server started at port *****", port);
+  console.log(`***** Social Media Server started at port ${port} *****`);
   dbConnection();
   cloudinaryConnection();
 });

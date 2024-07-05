@@ -19,9 +19,12 @@ import FeedIcon from '@mui/icons-material/Feed';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import UserProfile from '@/shared/widgets/UserProfile';
 import { IAuth } from '@/shared/interfaces/miscalleneous';
-import { alphabets } from '@/shared/constants';
 import { handleLogout } from '@/redux/slices/auth';
 import { useAppDispatch } from '@/redux/store/store';
+import { handleSnackBar } from '@/redux/slices/snackbar';
+import { getNameFirstLetter } from '@/shared/name.util';
+
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -39,10 +42,6 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-
-const getfirstLetter=(letter:string)=>{
-  return alphabets.filter(item => (item.letter)?.toLowerCase() === letter?.toLowerCase())[0];
-}
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -72,7 +71,6 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState< null| HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState< null| HTMLElement>(null);
-  const userFirstLetter=auth?.firstName?.substring(0,1);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -94,9 +92,10 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   };
 
   const logout=()=>{
+    dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: "Logging out..." }));
     dispatch(handleLogout());
     handleMenuClose();
-  }
+  };
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -208,7 +207,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            Social Media
+            2 Post
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -237,6 +236,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
                 </Badge>
               </IconButton>
               <IconButton
+              href=''
               size="large"
               edge="end"
               aria-label="account of current user"
@@ -245,11 +245,12 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
               onClick={handleProfileMenuOpen}
               color="inherit"
               >
-                <UserProfile name={getfirstLetter(userFirstLetter)}/>
+                <UserProfile name={getNameFirstLetter(auth?.firstName)}/>
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
+                href=''
                 size="large"
                 aria-label="show more"
                 aria-controls={mobileMenuId}

@@ -1,14 +1,14 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import UserModel from '../../database/models/user.js';
 import { HTTP_CODES } from '../../shared/constants/constant.js';
 import resMessage from '../../shared/i18n/msgreader.js';
-import tokenObject from '../../shared/utils/token/token.js';
+import tokenObject, { TOKEN, TRequestAuth } from '../../shared/utils/token/token.js';
 import encrypt from '../../config/encrypt.js';
 import { CreateUserType, LoginUserType } from '../../shared/validation/user.js';
 
-const { UNPROCESSABLE,CREATE,SUCCESS,RESOURCE_NOT_FOUND,CONFLICT }=HTTP_CODES;
+const { BAD_REQUEST,CREATE,SUCCESS,CONFLICT,UNAUTHORIZE }=HTTP_CODES;
 
-export const userController= {
+export const authController= {
     async register(req: Request<CreateUserType["body"]>,res:Response){
         const user=req.body;
         try {
@@ -29,8 +29,8 @@ export const userController= {
     },
     async login(req:Request<LoginUserType["body"]>, res:Response){
         try {
-            const {email,password}=req.body;
-            const {tokenEncode}=tokenObject;
+            const { email,password }=req.body;
+            const { tokenEncode }=tokenObject;
             const user=await UserModel.findOne({email}).exec();
             if(user && user.email) {
                 let dbPassword = user.password;
@@ -46,32 +46,32 @@ export const userController= {
                         email: user.email,
                         gender: user.gender,
                         accessToken: accessToken,
+                        refreshToken: refreshToken,
                         id: user._id
                     });
-                } else {
-                    return res.status(UNPROCESSABLE).json({ message: resMessage.readMessage("user", "password") });
+                } 
+                else {
+                    return res.status(BAD_REQUEST).json({ message: resMessage.readMessage("user", "invalid") });
                 }
-                
-            } else {
-                return res.status(RESOURCE_NOT_FOUND).json({ message: resMessage.readMessage("user", "notexist") });
-            }
+            } 
 
         } catch (error:any) {
-            console.log('API: login error',error.message);
+            console.log('API: login error', error.message);
+            throw new Error(error.message);
+        }
+    },
+    async refreshToken(req: Request, res: Response){
+        try {
+            const token=req.headers.authorization?.split(' ')[1] || req.cookies?.refreshToken;
+            const isVerified=tokenObject.tokenDecode(token, TOKEN['REFRESH_TOKEN'], req);
+            if(isVerified){
+                const decode=(<TRequestAuth>req).decode;
+                const { accessToken }=tokenObject.tokenEncode({ email: decode.email, firstName: decode.firstName, id:decode.id });
+                return res.status(SUCCESS).json({ accessToken: accessToken });
+            }
+        } catch (error: any) {
+            console.log('API: refresh token error', error.message);
+            res.status(UNAUTHORIZE).json({ message: "Unauthorized" });
         }
     }
-    // async find(req,res){
-    //     const {email}=req.body;
-    //     try {
-    //         const user=await UserModel.findOne({'email':email}).exec();
-    //         if(user){
-    //             res.status(SUCCESS).json(user);
-    //         }
-
-    //     } catch (error) {
-    //         console.log('API error',error.message);
-    //         res.status(500).json({message:error.message});
-    //         throw new Error(error.message);
-    //     }
-    // }
 }

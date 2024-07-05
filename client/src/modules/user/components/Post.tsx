@@ -5,8 +5,8 @@ import { useParams } from "react-router-dom";
 
 const Post = () => {
     const params=useParams();
-    
-    const 
+    console.log('parms',params);
+
   return (
     <Grid item xs={12} md={9}>
       <Item>
