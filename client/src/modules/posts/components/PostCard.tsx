@@ -16,39 +16,54 @@ import { IPost } from '@/modules/user/interfaces';
 import dayjs from 'dayjs';
 import UserAvatar from '@/shared/widgets/UserProfile';
 import { getNameFirstLetter } from '@/shared/name.util';
-
+import { NavLink } from 'react-router-dom';
+import { ROUTES } from '@/routes/routeslinks';
+import { Box } from '@mui/material';
 
 export default function PostCard(post: IPost) {
   const { title, content, image, tags, createdAt }=post;
+  const { USER, FEEDS }=ROUTES;
   return (
     <Grid item xs={12}>
-    <Card sx={{ maxWidth: '100%', bgcolor:'#fff'}} elevation={1}>
-      <CardHeader
-        sx={{textAlign:'left'}}
-        avatar={
-            <UserAvatar name={getNameFirstLetter('David')} /> 
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={'David Paul'}
-        subheader={dayjs(createdAt).format('MMM DD, YYYY')}
-      />
+    <Card sx={{ maxWidth: '100%', bgcolor:'#fff' }} elevation={1}> 
+      <NavLink style={{ textDecoration:'none', color:'inherit' }} to={`${USER}/${FEEDS}/${post._id}`}> 
+        <CardHeader
+          sx={{ textAlign:'left' }}
+          avatar={
+              <UserAvatar name={getNameFirstLetter('David')} /> 
+          }
+          action={
+            <IconButton aria-label="settings"> 
+              <MoreVertIcon /> 
+            </IconButton> 
+          }
+          title={'David Paul'}
+          subheader={dayjs(createdAt).format('MMM DD, YYYY')}
+        />
+      </NavLink>
+      
       <CardMedia
         component="img"
         height="350"
         image={image}
         alt={title}
       />
-      <CardActions disableSpacing>
-        <IconButton aria-label="like" title='Likes' sx={{color:red[400]}}>
+      <CardActions sx={{ display: 'flex', gap: 1}} disableSpacing>
+        <Box sx={{ display: 'flex', flexDirection :'column'}}>
+          <IconButton aria-label="like" title='Likes' sx={{color:red[400]}}>
           <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="add comments" title='comments'>
+          </IconButton>
+         <span style={{ color: 'grey'}}>2 likes</span>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection :'column'}}>
+          <IconButton aria-label="add comments" title='comments'>
             <CommentIcon />
-        </IconButton>
+          </IconButton>
+          <span style={{ color: 'grey'}}>2 comments</span>
+        </Box>
+        
+        
         
         <IconButton aria-label="share" title='share'>
           <ShareIcon />
@@ -59,7 +74,7 @@ export default function PostCard(post: IPost) {
         <Typography variant="body2" color="text.secondary">
           {content}
         </Typography>
-        {tags.map((tag, index)=><Link key={index} style={{ marginRight: '0.4rem'}}>#{tag}</Link>)}
+        {tags?.map((tag, index)=><Link key={index} style={{ marginRight: '0.4rem'}}>#{tag}</Link>)}
       </CardContent>
     </Card>
     </Grid> 

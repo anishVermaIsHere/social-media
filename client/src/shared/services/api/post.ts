@@ -18,6 +18,12 @@ const postAPI={
             // }
         });
     },
+    async fetchById(postId: string){
+        return await axiosInstance({
+            method:'GET',
+            url: `${URL}/${postId}`
+        });
+    },
     async fetch(){
         return await axiosInstance({
             method:'GET',

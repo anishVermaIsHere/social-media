@@ -5,8 +5,9 @@ import resMessage from '../../shared/i18n/msgreader.js';
 import { CreatePostType } from '../../shared/validation/posts.js';
 import { TRequestAuth } from '../../shared/utils/token/token.js';
 import { deleteUploadImage } from '../../shared/utils/deleteuploadfile.js';
+import mongoose from 'mongoose';
 
-const{ CREATE, SUCCESS }=HTTP_CODES;
+const{ CREATE, SUCCESS, BAD_REQUEST, RESOURCE_NOT_FOUND }=HTTP_CODES;
 
 export const postController={
     async create(req: Request<{}, CreatePostType["body"]>, res: Response){
@@ -22,6 +23,23 @@ export const postController={
             }
         } catch (error: any) {
             console.log('API: error while post creation', error.message);
+            throw new Error(error.message);
+        }
+    },
+    async getById(req: Request, res: Response){
+        try {
+            const postId=req?.params?.id || '';
+            if (!mongoose.Types.ObjectId.isValid(postId)) {
+                return res.status(BAD_REQUEST).json({ error: 'Invalid ID format' });
+            }
+            const post = await PostModel.findById(postId);
+            if (!post) {
+                return res.status(RESOURCE_NOT_FOUND).json({ error: 'Post not found' });
+            }
+
+            return res.status(SUCCESS).json(post);
+        } catch (error: any) {
+            console.log('API: error while getting post by id', error.message);
             throw new Error(error.message);
         }
     },
@@ -50,7 +68,7 @@ export const postController={
                 return res.status(SUCCESS).json({ message: resMessage.readMessage("post", "deletesuccess")});
             }
         } catch (error: any) {
-            console.log('API: error while deleting posts',error.message);
+            console.log('API: error while deleting posts', error.message);
             throw new Error(error.message);
         }
     },

@@ -10,7 +10,7 @@ const UserAvatar = ({ name }:{ name: { letter: string, bgColor: string } }) => {
             fontSize:'1rem',
             fontWeight:'400',
             display:'grid',
-            placeItems:'center'
+            placeItems:'center',
         }}>
             <span>{name?.letter}</span>
         </div>
