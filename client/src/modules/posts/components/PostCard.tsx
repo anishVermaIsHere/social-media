@@ -7,10 +7,10 @@ import Link from '@mui/material/Link';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CommentIcon from '@mui/icons-material/Comment';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import Grid from '@mui/material/Grid';
 import { IPost } from '@/modules/user/interfaces';
 import dayjs from 'dayjs';
@@ -18,11 +18,12 @@ import UserAvatar from '@/shared/widgets/UserProfile';
 import { getNameFirstLetter } from '@/shared/name.util';
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '@/routes/routeslinks';
-import { Box } from '@mui/material';
+
 
 export default function PostCard(post: IPost) {
   const { title, content, image, tags, createdAt }=post;
   const { USER, FEEDS }=ROUTES;
+  const likedColor=red[400];
   return (
     <Grid item xs={12}>
     <Card sx={{ maxWidth: '100%', bgcolor:'#fff' }} elevation={1}> 
@@ -33,7 +34,7 @@ export default function PostCard(post: IPost) {
               <UserAvatar name={getNameFirstLetter('David')} /> 
           }
           action={
-            <IconButton aria-label="settings"> 
+            <IconButton aria-label="settings" onClick={(e)=> e.preventDefault()}> 
               <MoreVertIcon /> 
             </IconButton> 
           }
@@ -48,34 +49,30 @@ export default function PostCard(post: IPost) {
         image={image}
         alt={title}
       />
-      <CardActions sx={{ display: 'flex', gap: 1}} disableSpacing>
-        <Box sx={{ display: 'flex', flexDirection :'column'}}>
-          <IconButton aria-label="like" title='Likes' sx={{color:red[400]}}>
-          <FavoriteIcon />
+      <CardActions sx={{ display: 'flex', gap: '4px'}} disableSpacing>
+          <IconButton aria-label="like" title='Likes'>
+          <FavoriteBorderOutlinedIcon />
           </IconButton>
-         <span style={{ color: 'grey'}}>2 likes</span>
-        </Box>
 
-        <Box sx={{ display: 'flex', flexDirection :'column'}}>
           <IconButton aria-label="add comments" title='comments'>
-            <CommentIcon />
+            <CommentOutlinedIcon />
           </IconButton>
-          <span style={{ color: 'grey'}}>2 comments</span>
-        </Box>
         
-        
-        
-        <IconButton aria-label="share" title='share'>
-          <ShareIcon />
-        </IconButton>
+          <IconButton aria-label="share" title='share'>
+            <ShareOutlinedIcon />
+          </IconButton>
       </CardActions>
 
       <CardContent sx={{textAlign:'left'}}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography align='left' sx={{ color: 'grey', fontSize: '0.9rem', cursor:'pointer' }}>12.5 likes</Typography>
+        <Typography variant="body2" color="text.primary">
           {content}
         </Typography>
         {tags?.map((tag, index)=><Link key={index} style={{ marginRight: '0.4rem'}}>#{tag}</Link>)}
+        <Typography align='left' sx={{ color: 'grey', fontSize: '0.9rem', cursor:'pointer' }}>15 comments</Typography>
       </CardContent>
+
+
     </Card>
     </Grid> 
   );

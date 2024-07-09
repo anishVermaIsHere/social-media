@@ -15,13 +15,11 @@ export default function GridPostCard(post: any) {
 
   const handleOptions = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = (event: MouseEvent) => {
     event.preventDefault();
-    event.stopPropagation();
     setAnchorEl(null);
   };
 
