@@ -16,6 +16,10 @@ export enum TOKEN {
   REFRESH_TOKEN='REFRESH_TOKEN'
 }
 
+export const decodedUser=(req: Request)=>{
+  return (<TRequestAuth>req)["decode"];
+}
+
 const tokenObject = {
   tokenEncode(payload) {
     const { id }=payload;

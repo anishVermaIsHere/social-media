@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -18,12 +19,19 @@ import UserAvatar from '@/shared/widgets/UserProfile';
 import { getNameFirstLetter } from '@/shared/name.util';
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '@/routes/routeslinks';
+import postAPI from '@/shared/services/api/post';
 
 
 export default function PostCard(post: IPost) {
   const { title, content, image, tags, createdAt }=post;
+  const [like, setLike]=useState(false);
   const { USER, FEEDS }=ROUTES;
   const likedColor=red[400];
+  
+  const handleLike=async(postId: string)=>{
+    return await postAPI.like(postId);
+  };
+
   return (
     <Grid item xs={12}>
     <Card sx={{ maxWidth: '100%', bgcolor:'#fff' }} elevation={1}> 
@@ -50,7 +58,7 @@ export default function PostCard(post: IPost) {
         alt={title}
       />
       <CardActions sx={{ display: 'flex', gap: '4px'}} disableSpacing>
-          <IconButton aria-label="like" title='Likes'>
+          <IconButton aria-label="like" title='Likes' onClick={()=>handleLike(post?._id)}>
           <FavoriteBorderOutlinedIcon />
           </IconButton>
 

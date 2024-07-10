@@ -3,7 +3,7 @@ import PostModel from '../../database/models/post.js';
 import { HTTP_CODES } from '../../shared/constants/constant.js';
 import resMessage from '../../shared/i18n/msgreader.js';
 import { CreatePostType } from '../../shared/validation/posts.js';
-import { TRequestAuth } from '../../shared/utils/token/token.js';
+import { decodedUser, TRequestAuth } from '../../shared/utils/token/token.js';
 import { deleteUploadImage } from '../../shared/utils/deleteuploadfile.js';
 import mongoose from 'mongoose';
 
@@ -72,10 +72,18 @@ export const postController={
             throw new Error(error.message);
         }
     },
-    // async update(req,res){
+    async like(req: Request, res: Response){
+        try {
+           const post=await this.getById(req, res);
+           console.log('post received', post);
+           // ....
 
-    // },
-    // async updateLike(req,res){
+        } catch (error: any) {
+            console.log('API: error while like post', error.message);
+            throw new Error(error.message);
+        }
+    },
+    // async update(req,res){
 
     // }
 }

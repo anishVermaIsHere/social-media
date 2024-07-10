@@ -12,6 +12,7 @@ postRouter.post('/', tokenVerify, uploadOnServer.single('image'), uploadOnCloud,
 postRouter.get('/', tokenVerify, postController.get);
 postRouter.get('/:id', tokenVerify, postController.getById);
 postRouter.delete('/:id', tokenVerify, postController.delete);
+postRouter.post('/like/:id', tokenVerify, postController.like);
 
 
 export default postRouter;

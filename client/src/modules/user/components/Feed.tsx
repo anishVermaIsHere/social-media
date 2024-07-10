@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/shared/widgets/Spinner";
 import postAPI from "@/shared/services/api/post";
 import AlertCard from "@/shared/widgets/AlertCard";
+import NoData from "@/shared/widgets/NoData";
 
 const Feed = () => {
   const { isPending, error, isError, data } = useQuery({
@@ -20,6 +21,9 @@ const Feed = () => {
       </Grid>
     );
   }
+  if(!posts.length){
+    return <NoData message="No posts..."/> 
+   }
   if (isError) {
     return <AlertCard message={error.message} severity="error" />;
   }

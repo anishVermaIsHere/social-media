@@ -35,6 +35,12 @@ const postAPI={
             method:'DELETE',
             url: `${URL}/${postId}`
         });
+    },
+    async like(postId: string){
+        return await axiosInstance({
+            method: 'POST',
+            url: `${URL}/like/${postId}`
+        });
     }
     
 };

@@ -6,9 +6,9 @@ const postSchema = new Schema(
     content: { type: String, required: [true, "Please provide post content"] },
     image: { type: String },
     tags: { type: [String] },
-    likes: { type: SchemaTypes.ObjectId, ref: "Likes" },
-    comments: [{ type: SchemaTypes.ObjectId, ref: "Comment" }],
-    user: { type: SchemaTypes.ObjectId, ref: "Users" },
+    likes: { type: SchemaTypes.ObjectId, default: 0 },
+    comments: { type: SchemaTypes.Number, default: 0 },
+    user: { type: SchemaTypes.ObjectId, ref: "Users", required: true },
   },
   { timestamps: true }
 );
