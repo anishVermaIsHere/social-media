@@ -66,7 +66,7 @@ const Profile = () => {
         <Typography mt={4} px={5} variant="body2">POSTS</Typography>
         <Divider sx={{my: 1}} />
         <Grid container>
-          {posts.length ? posts?.map((post: any)=><Grid key={post?._id} item xs={12} sm={4} md={4}>
+          {posts.posts.length ? posts?.posts?.map((post: any)=><Grid key={post?._id} item xs={12} sm={4} md={4}>
             <GridPostCard {...post} />
           </Grid>)
           :

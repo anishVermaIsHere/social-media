@@ -20,7 +20,10 @@ export interface IPost {
     content: string;
     image: string;
     tags: string[];
-    comments: any[];
+    likes: number;
+    isLikedByMe: boolean;
+    comments: number;
+    user: any;
     createdAt: string;
     updatedAt: string;
 

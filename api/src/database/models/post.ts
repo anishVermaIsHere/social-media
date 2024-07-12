@@ -6,7 +6,7 @@ const postSchema = new Schema(
     content: { type: String, required: [true, "Please provide post content"] },
     image: { type: String },
     tags: { type: [String] },
-    likes: { type: SchemaTypes.ObjectId, default: 0 },
+    likes: { type: SchemaTypes.Number, default: 0 },
     comments: { type: SchemaTypes.Number, default: 0 },
     user: { type: SchemaTypes.ObjectId, ref: "Users", required: true },
   },

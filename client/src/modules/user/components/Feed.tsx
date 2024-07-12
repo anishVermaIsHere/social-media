@@ -21,7 +21,7 @@ const Feed = () => {
       </Grid>
     );
   }
-  if(!posts.length){
+  if(!posts.posts.length){
     return <NoData message="No posts..."/> 
    }
   if (isError) {
@@ -31,9 +31,22 @@ const Feed = () => {
     <>
       <Item elevation={0}>
         <Grid container spacing={2}>
-          {posts?.map((post: any) => (
-            <PostCard key={post._id} {...post} />
-          ))}
+          {posts.posts?.map((post: any) => {
+            
+            let isLikedByMe=false;
+            posts.likes.some((like: any) => {
+              if (like.post === post._id) {
+                isLikedByMe = true;
+                return true;  
+              } else {
+                return false;
+              }
+            });
+
+            const updatedPost={ ...post, isLikedByMe };
+
+            return <PostCard key={post._id} post={updatedPost} />
+          })}
         </Grid>
       </Item>
     </>
