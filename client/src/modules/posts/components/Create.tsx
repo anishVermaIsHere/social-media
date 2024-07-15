@@ -44,11 +44,16 @@ const Create = () => {
 
   const onSubmit: SubmitHandler<Schema> = async (data: Schema) => {
     try {
-      const fd = new FormData();
-      fd.append("image", data.image);
-      fd.append("title", data.title);
-      fd.append("content", data.content);
-      fd.append("tags", data.tags);
+      let fd!:any;
+      if(!data.image){
+        fd=data;
+      } else {
+        fd = new FormData();
+        fd.append("image", data?.image);
+        fd.append("title", data.title);
+        fd.append("content", data.content);
+        fd.append("tags", data.tags);
+      }
       const response = await postAPI.create(fd);
       reset();
       if (response.data?.statusCode === 201) {

@@ -7,6 +7,21 @@ import postAPI from "@/shared/services/api/post";
 import AlertCard from "@/shared/widgets/AlertCard";
 import NoData from "@/shared/widgets/NoData";
 
+
+// export const addLikesInPost=(post: any, posts: any)=>{
+//   let isLikedByMe=false;
+//     posts.likes.some((like: any) => {
+//       if (like.post === post._id) {
+//         isLikedByMe = true;
+//         return true;  
+//       } else {
+//         return false;
+//       }
+//     });
+
+//     return { ...post, isLikedByMe };
+    
+// }
 const Feed = () => {
   const { isPending, error, isError, data } = useQuery({
     queryKey: ["posts"],
@@ -14,6 +29,9 @@ const Feed = () => {
   });
   const posts = data?.data;
 
+
+  console.log('posts lists', posts);
+  
   if (isPending) {
     return (
       <Grid item xs={12} md={9}>
@@ -31,21 +49,8 @@ const Feed = () => {
     <>
       <Item elevation={0}>
         <Grid container spacing={2}>
-          {posts.posts?.map((post: any) => {
-            
-            let isLikedByMe=false;
-            posts.likes.some((like: any) => {
-              if (like.post === post._id) {
-                isLikedByMe = true;
-                return true;  
-              } else {
-                return false;
-              }
-            });
-
-            const updatedPost={ ...post, isLikedByMe };
-
-            return <PostCard key={post._id} post={updatedPost} />
+          {posts?.posts?.map((post: any) => {            
+            return <PostCard key={post._id} post={post} />
           })}
         </Grid>
       </Item>

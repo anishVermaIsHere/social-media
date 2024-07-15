@@ -21,7 +21,7 @@ export interface IPost {
     image: string;
     tags: string[];
     likes: number;
-    isLikedByMe: boolean;
+    isLiked: boolean;
     comments: number;
     user: any;
     createdAt: string;

@@ -20,18 +20,25 @@ import { getNameFirstLetter } from '@/shared/name.util';
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '@/routes/routeslinks';
 import postAPI from '@/shared/services/api/post';
+import defaultPostImage from '@/assets/2post.jpg';
+import CommentBox from './CommentBox';
+
+export const defaultImage=defaultPostImage;
 
 export default function PostCard({ post }: {post: IPost }) {
   const { title, content, image, tags, createdAt }=post;
   const [like, setLike]=useState(post.likes);
-  const [toggle, setToggle]=useState(false);
+  const [toggle, setToggle]=useState(post.isLiked);
   const { USER, FEEDS }=ROUTES;
   const postUser=post.user;
   
   const handleLike=async(postId: string)=>{
       setToggle(!toggle);
       if(toggle){
-        setLike(like-1);
+        if(like>0){
+          setLike(like-1);
+        }
+        return await postAPI.unlike(postId);
       } else {
         setLike(like+1);
         return await postAPI.like(postId);
@@ -60,12 +67,12 @@ export default function PostCard({ post }: {post: IPost }) {
       <CardMedia
         component="img"
         height="350"
-        image={image}
+        image={image || defaultImage}
         alt={title}
       />
       <CardActions sx={{ display: 'flex', gap: '4px' }} disableSpacing>
         <IconButton aria-label="like" title='Likes' onClick={()=>handleLike(post?._id)}>
-          {toggle || post.isLikedByMe ? <ThumbUpIcon color='primary'/> : <ThumbUpOutlinedIcon /> }
+          {toggle ? <ThumbUpIcon color='primary'/> : <ThumbUpOutlinedIcon /> }
         </IconButton>
 
         <IconButton aria-label="add comments" title='comments'>
@@ -89,6 +96,7 @@ export default function PostCard({ post }: {post: IPost }) {
         </Typography>
         {tags?.map((tag, index)=><Link key={index} style={{ marginRight: '0.4rem'}}>#{tag}</Link>)}
         <Typography align='left' sx={{ color: 'grey', fontSize: '0.9rem', cursor:'pointer' }}>15 comments</Typography>
+        {/* <CommentBox /> */}
       </CardContent>
 
 

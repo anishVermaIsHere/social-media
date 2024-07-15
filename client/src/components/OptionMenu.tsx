@@ -58,24 +58,23 @@ export default function OptionMenu({ anchorEl, postId, open, handleClose }: Opti
     const queryClient=useQueryClient();
     const deleteMutation = useMutation({
         mutationFn: async(postId: string )=>{
-            await postAPI.delete(postId);
+          await postAPI.delete(postId);
         },
         onSuccess: () => {
-            
         },
         onSettled:async(_,error)=>{
-        if(error){
-            // toast.error(`${error}`);
-        }
-        else { 
-            queryClient.invalidateQueries({ queryKey: ['posts'] }); 
-        }
+          if(error){
+              // toast.error(`${error}`);
+          }
+          else { 
+              queryClient.invalidateQueries({ queryKey: ['posts'] }); 
+          }
 
         }
     })
     
-    const deletePost=async(event: React.MouseEvent, postId: string )=>{
-        deleteMutation.mutate(postId);
+    const deletePost=(event: React.MouseEvent, postId: string )=>{
+         deleteMutation.mutate(postId);
         handleClose(event);
     }
 

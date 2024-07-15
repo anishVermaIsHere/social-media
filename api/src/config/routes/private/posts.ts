@@ -5,14 +5,23 @@ import { postSchema } from "../../../shared/validation/posts.js";
 import { postController } from "../../../controller/posts/posts.js";
 import { uploadOnCloud, uploadOnServer } from "../../../middlewares/uploadfile.js";
 import { tokenVerify } from "../../../middlewares/tokenverify.js";
+import { likeController } from "../../../controller/posts/likes.js";
 
 
 const postRouter=Router();
-postRouter.post('/', tokenVerify, uploadOnServer.single('image'), uploadOnCloud, validator(postSchema), postController.create);
+postRouter.post('/', tokenVerify,(req, res, next)=>{
+    if(req.body!==null){
+        validator(postSchema);
+        postController.create(req,res);
+    } else {
+        next();
+    }
+}, uploadOnServer.single('image'), uploadOnCloud, validator(postSchema), postController.create);
 postRouter.get('/', tokenVerify, postController.getByUser);
 postRouter.get('/:id', tokenVerify, postController.getById);
 postRouter.delete('/:id', tokenVerify, postController.delete);
-postRouter.post('/like/:id', tokenVerify, postController.like);
+postRouter.post('/like/:id', tokenVerify, likeController.create);
+postRouter.delete('/like/:id', tokenVerify, likeController.delete);
 
 
 export default postRouter;

@@ -18,6 +18,7 @@ const Post = () => {
     });
 
     const post=data?.data;
+    console.log('post', post);
 
   if (isLoading || isPending) {
     return (
@@ -35,7 +36,7 @@ const Post = () => {
   return (
       <Item elevation={0}>
         <Grid container spacing={2}>
-          <PostCard {...post}/>
+          <PostCard post={post} />
         </Grid>
       </Item>
       

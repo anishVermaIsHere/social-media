@@ -6,6 +6,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '@/routes/routeslinks';
 import OptionMenu from '@/components/OptionMenu';
+import { defaultImage } from '@/modules/posts/components/PostCard';
 
 
 export default function GridPostCard(post: any) {
@@ -37,7 +38,7 @@ export default function GridPostCard(post: any) {
           </IconButton>
         <OptionMenu open={open} anchorEl={anchorEl} handleClose={handleClose} postId={post._id} />
         
-        <CardMedia sx={{ height: 180 }} image={post.image} title={post.title} />
+        <CardMedia sx={{ height: 180 }} image={post.image || defaultImage} title={post.title} />
       </Card>
     </NavLink>
     </>

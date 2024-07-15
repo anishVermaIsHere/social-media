@@ -4,7 +4,7 @@ const postSchema = new Schema(
   {
     title: { type: String, required: [true, "Please provide post title"] },
     content: { type: String, required: [true, "Please provide post content"] },
-    image: { type: String },
+    image: { type: String, default: '' },
     tags: { type: [String] },
     likes: { type: SchemaTypes.Number, default: 0 },
     comments: { type: SchemaTypes.Number, default: 0 },

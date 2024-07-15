@@ -22,5 +22,14 @@
         "updatesuccess":"Post updated successfully",
         "deletesuccess":"Post deleted successfully",
         "deletefail":"Post not deleted"
+    },
+    "like": {
+        "create": "Liked post",
+        "delete": "Unlike post"
+    },
+    "comment": {
+        "create": "Comment posted successfully",
+        "delete": "Comment deleted successfully",
+        "update": "Comment updated successfully"
     }
 }
