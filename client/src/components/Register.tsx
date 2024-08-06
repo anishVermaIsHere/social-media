@@ -22,7 +22,6 @@ import { useAppDispatch} from '../redux/store/store';
 import { registerSchema } from '../shared/validation/user';
 import userAPI from '../shared/services/api/user';
 import { handleSnackBar } from '../redux/slices/snackbar';
-import { IUserCreate } from '../modules/user/interfaces';
 
 
 export const theme = createTheme({
@@ -84,7 +83,6 @@ export default function Register() {
                 <TextField
                   size='small'
                   autoComplete="given-name"
-                  name="firstName"
                   required
                   fullWidth
                   id="firstName"
@@ -145,7 +143,6 @@ export default function Register() {
                   size='small'
                   required
                   fullWidth
-                  name="password"
                   label="Password"
                   {...register('password')}
                   type="password"
@@ -160,7 +157,6 @@ export default function Register() {
                   size='small'
                   required
                   fullWidth
-                  name="repeatPassword"
                   label="Repeat Password"
                   {...register('repeatPassword')}
                   type="password"

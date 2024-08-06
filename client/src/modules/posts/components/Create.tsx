@@ -99,6 +99,7 @@ const Create = () => {
               encType="multipart/form-data"
             >
               <Box
+                onClick={handleClick}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -108,6 +109,7 @@ const Create = () => {
                   height: 300,
                   border: "4px dashed gray",
                   borderRadius: "0.375rem",
+                  cursor:"pointer"
                 }}
               >
                 {imagePreview && (
@@ -118,19 +120,10 @@ const Create = () => {
                   />
                 )}
 
-                <Button
-                  onClick={handleClick}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    background: "none",
-                  }}
-                >
-                  <AddPhotoAlternateIcon fontSize="large" />
+                  <AddPhotoAlternateIcon sx={{ fontSize: '5rem' }} />
                   <Typography component="p" mt={2}>
                     Upload photo
                   </Typography>
-                </Button>
 
                 <Controller
                   name="image"
@@ -144,9 +137,7 @@ const Create = () => {
                       inputRef={fileInputRef}
                       // accept="image/*"
                       onBlur={onBlur}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        onChange(e.target.files?.[0])
-                      }
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>onChange(e.target.files?.[0])}
                       sx={{ display: "none" }}
                     />
                   )}

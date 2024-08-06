@@ -1,19 +1,45 @@
+import commentAPI from "@/shared/services/api/comment";
 import { Button, FormControl, TextField } from "@mui/material";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { commentSchema } from "@/shared/validation/post";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import AlertCard from "@/shared/widgets/AlertCard";
 
-const CommentBox = () => {
+
+type Schema=z.infer<typeof commentSchema>
+const CommentBox = ({ postId }: { postId: string }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    control,
+    formState: { errors, isDirty, isValid },
     reset,
-    watch,
-  } = useForm();
+  } = useForm<Schema>({
+    resolver: zodResolver(commentSchema)
+  });
 
-  const onSubmit = (data) => {
+  const queryClient=useQueryClient();
+
+  const onSubmit: SubmitHandler<Schema> = async(data) => {
     console.log("comment posted", data);
+    await mutation.mutate({ content: data.content, postId });
+    reset();
   };
+
+  const mutation=useMutation({
+    mutationFn: async(data: { content: string, postId: string})=>await commentAPI.create(data),
+    onSuccess: () => {
+      
+    },
+    onSettled:async(_,error)=>{
+      if(error){
+        return <AlertCard message={error.message} severity="error" />;
+      }
+      else queryClient.invalidateQueries({ queryKey: ['post'] })
+    }
+  })
 
   return (
     <FormControl
@@ -25,8 +51,8 @@ const CommentBox = () => {
       <TextField
         fullWidth
         multiline
-        maxRows={6}
-        minRows={6}
+        maxRows={2}
+        minRows={2}
         //   label="Comment..."
         autoComplete="off"
         sx={{ maxWidth: "100%" }}
@@ -35,11 +61,18 @@ const CommentBox = () => {
         margin="dense"
         {...register("content")}
       />
+      {errors.content && (
+        <span className="error">
+          <ErrorOutlineIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+          {errors.content.message}
+        </span>
+      )}
       <Button
         variant="contained"
         type="submit"
         color="primary"
         fullWidth
+        disabled={!isDirty || !isValid}
         sx={{
           p: 1,
           marginRight: "0.8rem",

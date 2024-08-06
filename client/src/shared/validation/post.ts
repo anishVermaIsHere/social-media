@@ -10,3 +10,9 @@ export const postSchema = object({
     tags: string({ required_error: 'Enter tags'})
       .min(2, { message: 'Minimum 1 tag is required' }),
   });
+
+
+
+export const commentSchema=object({
+  content: string({ required_error: 'Comment required' })
+})

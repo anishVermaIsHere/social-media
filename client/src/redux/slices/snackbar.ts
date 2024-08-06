@@ -3,7 +3,7 @@ import { ISnackBar } from "../../shared/interfaces/miscalleneous";
 
 const initialState: ISnackBar = {
     message: "", 
-    type:"", // due to throws an error during setting the null value in capitilize.js thats here we assigning an empty string 
+    type:"info", // due to throws an error during setting the null value in capitilize.js thats here we assigning an empty string 
     open:false
 }
 

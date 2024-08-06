@@ -28,9 +28,6 @@ const Feed = () => {
     queryFn: async () => await postAPI.fetch(),
   });
   const posts = data?.data;
-
-
-  console.log('posts lists', posts);
   
   if (isPending) {
     return (

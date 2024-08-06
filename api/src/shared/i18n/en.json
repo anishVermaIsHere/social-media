@@ -13,7 +13,9 @@
         "loginfail":"login failed",
         "deletesuccess":"User deleted successfully",
         "deletefail":"User not deleted",
-        "unauthorize":"Unauthorized user"
+        "unauthorize":"Unauthorized user",
+        "follow": "Followed successfully",
+        "unfollow": "Unfollowed"
     },
     "post":{
         "create":"Post created successfully",

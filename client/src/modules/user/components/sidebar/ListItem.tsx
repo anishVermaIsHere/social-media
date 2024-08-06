@@ -13,14 +13,14 @@ import Person2Icon from '@mui/icons-material/Person2';
 
 const { FEEDS, CREATE_POST, PROFILE } = ROUTES;
 
-export const activeStyle = {
-  backgroundColor: "primary",
-};
+// const activeStyle = {
+//   backgroundColor: "primary",
+// };
 
 export const mainListItems = (
   <React.Fragment>
     <ListItemButton
-      style={({ isActive }) => (isActive ? activeStyle : undefined)}
+      // style={({ isActive }) => (isActive ? activeStyle : undefined)}
       component={NavLink}
       to={`/user/${FEEDS}`}
     >
@@ -30,7 +30,7 @@ export const mainListItems = (
       <ListItemText primary="Feeds" />
     </ListItemButton>
     <ListItemButton
-      style={({ isActive }) => (isActive ? activeStyle : undefined)}
+      // style={({ isActive }) => (isActive ? activeStyle : undefined)}
       component={NavLink}
       to={CREATE_POST}
     >
@@ -40,7 +40,7 @@ export const mainListItems = (
       <ListItemText primary="Create Post" />
     </ListItemButton>
     <ListItemButton
-      style={({ isActive }) => (isActive ? activeStyle : undefined)}
+      // style={({ isActive }) => (isActive ? activeStyle : undefined)}
       component={NavLink}
       to={PROFILE}
     >

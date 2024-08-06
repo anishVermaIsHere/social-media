@@ -8,6 +8,8 @@ import { decodedUser, TRequestAuth } from '../../shared/utils/token/token.js';
 import { deleteUploadImage } from '../../shared/utils/deleteuploadfile.js';
 import { likeController } from './likes.js';
 import { commentController } from './comments.js';
+import LikeModel from '../../database/models/like.js';
+import CommentModel from '../../database/models/comment.js';
 
 const{ CREATE, SUCCESS, BAD_REQUEST, RESOURCE_NOT_FOUND }=HTTP_CODES;
 
@@ -58,10 +60,14 @@ export const postController={
         try {
             const postId=req?.params?.id || '';
             const user=decodedUser(req);
-            const post = await postController.findOneById(postId, res);
-            const likes=await likeController.get('post', postId, res);
-            const isLiked=likes.some((like: any)=>like.user._id.toString()===user.id.toString());
-            const updatedPost= {...post.toObject(), isLiked }
+            const results= await Promise.all([
+                postController.findOneById(postId, res),
+                LikeModel.findOne({ user: user.id, post: postId }),
+                CommentModel.find({ post: postId }).populate("user", ["-password", "-createdAt", "-updatedAt"])
+            ]);
+            const [ post, likes, comments ]=results;
+            const isLiked=likes!==null;
+            const updatedPost= {...post.toObject(), isLiked, comments }
             return res.status(SUCCESS).json(updatedPost);
         } catch (error: any) {
             console.log('API: error while getting post by id', error.message);
@@ -74,20 +80,21 @@ export const postController={
             const postResults=await Promise.all([
                 PostModel.find({ user: user.id }).populate("user", ["-password", "-createdAt", "-updatedAt"]).sort('-createdAt'),
                 likeController.get('user', user.id, res),
+                commentController.getById('user', user.id)
             ]);
-            const [posts, likes]=postResults;
-           const comments= await commentController.get(req, res);
-            console.log('comments results',comments);
-
+            const [ posts, likes, comments ]=postResults;
+        //  const comments= await commentController.get(req, res);
+            console.log('comments results', comments);
             
             const likedPosts = posts.map((post) => {
                 const isLiked = likes.some((like: any) => like.post.toString() === post._id.toString());
-                return { ...post.toObject(), isLiked };  
+                const totalComments = comments.filter((comment: any)=>comment.post.toString() === post._id.toString());
+                return { ...post.toObject(), comments: totalComments, isLiked };  
             });            
             if (!posts) {
                 return res.status(RESOURCE_NOT_FOUND).json({ error: 'Post not found' });
             }
-            return res.status(SUCCESS).json({ posts: likedPosts, likes, comments: [] });
+            return res.status(SUCCESS).json({ posts: likedPosts });
 
         } catch (error:any) {
             console.log('API: error while getting post of logined user', error.message);
@@ -96,9 +103,9 @@ export const postController={
     },
     async delete(req: Request, res: Response){
         try {
-            const postId=req?.params?.id || '';
+            const postId = req?.params?.id || '';
             const post = await postController.findOneById(postId, res); 
-            const imageUrl= post?.image?.split('/');
+            const imageUrl = post?.image?.split('/');
             const imageId=imageUrl && imageUrl[imageUrl?.length-1].split('.')[0] || '';
             const isDeleted=await PostModel.deleteOne({ _id: postId });
             if(post.image!=='' && isDeleted.acknowledged){

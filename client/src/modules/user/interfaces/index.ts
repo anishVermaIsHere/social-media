@@ -22,7 +22,7 @@ export interface IPost {
     tags: string[];
     likes: number;
     isLiked: boolean;
-    comments: number;
+    comments: any[];
     user: any;
     createdAt: string;
     updatedAt: string;
