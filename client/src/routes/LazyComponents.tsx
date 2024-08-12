@@ -11,3 +11,4 @@ export const Layout = lazy(()=>import('@/modules/user/components/Layout'));
 export const Profile = lazy(()=>import('@/modules/user/components/Profile'));
 export const Create = lazy(()=>import('@/modules/posts/components/Create'));
 export const ErrorPage = lazy(()=>import('@/components/Error'));
+export const SearchResult=lazy(()=>import('@/modules/user/pages/SearchResult'));

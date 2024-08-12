@@ -1,16 +1,18 @@
 import { AxiosResponse } from 'axios';
 import axiosInstance from '../AxiosInterceptor';
-import { IUserCreate, IUserLogin } from '../../../modules/user/interfaces';
 
 
-const URL='/api/v1/auth'
+const URL='/api/v1/user'
 
 const userAPI={
-    async register(user: IUserCreate): Promise<AxiosResponse>{
-        return await axiosInstance.post(`${URL}/new`, user);
+    async search(query: string): Promise<AxiosResponse<any, any>>{
+        return await axiosInstance.post(`${URL}/search`, { query });        
     },
-    async login(user: IUserLogin): Promise<AxiosResponse>{
-        return await axiosInstance.post(`${URL}/`, user);        
+    async follow(id: string){
+        return await axiosInstance.post(`${URL}/follow`, { id });
+    },
+    async unfollow(id: string){
+        return await axiosInstance.post(`${URL}/unfollow`, { id });
     }
 };
 

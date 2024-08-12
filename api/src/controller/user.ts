@@ -4,25 +4,65 @@ import FollowModel from "../database/models/follow.js";
 import { decodedUser } from "../shared/utils/token/token.js";
 import resMessage from "../shared/i18n/msgreader.js";
 import { HTTP_CODES } from "../shared/constants/constant.js";
+import UserModel from "../database/models/user.js";
 
-const { CREATE, SUCCESS }=HTTP_CODES;
+const { CREATE, SUCCESS, BAD_REQUEST }=HTTP_CODES;
 
 
 export const userController={
-    
+    async search(req: Request, res: Response){
+        try {
+            const data=req.body;
+            const users = await UserModel.aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { firstName: { $regex: data.query, $options: 'i' } },
+                            { lastName: { $regex: data.query, $options: 'i' } },
+                            { email: { $regex: data.query, $options: 'i' } }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'follows', 
+                        localField: '_id',
+                        foreignField: 'following',
+                        as: 'followings'
+                    }
+                },
+                {
+                    $project: {
+                        firstName: 1,
+                        lastName: 1,
+                        email: 1,
+                        followings: { $map: { input: '$followings', as: 'f', in: '$$f.following' } }
+                    }
+                }
+            ]);
+
+            res.status(SUCCESS).json({ users });
+        }  catch (error: any) {
+            console.log('API: error while searching user', error.message);
+            throw new Error(error.message);
+        }
+    },
     async follow(req: Request, res: Response){
         try {
-            const userId=decodedUser(req);
+            const user=decodedUser(req);
             const followingId=req.body.id;
-            const followed = await FollowModel.find({ userId, followingId });
-            if (followed) {
+
+            const followed = await FollowModel.find({ user: user.id, following: followingId });
+            console.log('Follow', followed);
+
+            if (followed.length) {
                 throw new Error("You are already following this user");
             }
-        
-            await FollowModel.create({ user: userId, following: followingId });
+            await FollowModel.create({ user: user.id, following: followingId });
             return res.status(CREATE).json({ message: resMessage.readMessage("user", "follow")});
     
         } catch (error: any) {
+            // return res.status(BAD_REQUEST).json({ error: error.message });
             console.log('API: error while following user', error.message);
             throw new Error(error.message);
         }
@@ -30,21 +70,20 @@ export const userController={
     },
     async unfollow(req: Request, res: Response){
         try {
-            const userId=decodedUser(req);
+            const user=decodedUser(req);
             const followingId=req.body.id;
-            const followed = await FollowModel.find({ userId, followingId });
-            if (!followed) {
+            const followed = await FollowModel.find({ user:user.id, following: followingId });
+            if (!followed.length) {
                 throw new Error("You are already unfollowed this user");
             }
         
-            await FollowModel.deleteOne({ user: userId, following: followingId });
+            await FollowModel.deleteOne({ user: user.id, following: followingId });
             return res.status(SUCCESS).json({ message: resMessage.readMessage("user", "unfollow")});
     
         } catch (error: any) {
             console.log('API: error while unfollowing user', error.message);
             throw new Error(error.message);
         }
-       
     },
     async getFollowing(req:Request, res:Response){
         try {

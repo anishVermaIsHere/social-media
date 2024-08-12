@@ -10,6 +10,7 @@ import postRouter from "./config/routes/private/posts.js";
 import authRouter from "./config/routes/private/auth.js";
 import { cloudinaryConnection } from "./config/cloudinary.js";
 import commentRouter from "./config/routes/private/comments.js";
+import userRouter from "./config/routes/private/user.js";
 
 const app: Express = express();
 app.use(express.json());
@@ -36,6 +37,7 @@ app.use("/api/v1/auth", publicRouter);
 app.use("/api/v1/auth", authRouter);
 app.use('/api/v1/post', postRouter);
 app.use('/api/v1/comment', commentRouter);
+app.use('/api/v1/user', userRouter);
 
 
 const server = app.listen(process.env.SERVER_PORT || 5000, () => {

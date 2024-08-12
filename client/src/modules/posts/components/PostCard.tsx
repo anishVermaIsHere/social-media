@@ -52,8 +52,6 @@ export default function PostCard({ post }: { post: IPost }) {
       }
   };
 
-  console.log('comment',post);
-
   return (
     <Grid item xs={12}>
     <Card sx={{ maxWidth: '100%', bgcolor:'#fff', position:'relative', overflow:'auto' }} elevation={1}> 

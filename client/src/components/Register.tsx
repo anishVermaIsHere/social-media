@@ -20,7 +20,7 @@ import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../routes/routeslinks';
 import { useAppDispatch} from '../redux/store/store';
 import { registerSchema } from '../shared/validation/user';
-import userAPI from '../shared/services/api/user';
+import userAPI from '../shared/services/api/auth';
 import { handleSnackBar } from '../redux/slices/snackbar';
 
 

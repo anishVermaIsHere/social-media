@@ -1,4 +1,5 @@
-import { MouseEvent, FC, useState } from 'react';
+import { MouseEvent, ChangeEvent, FC, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -23,7 +24,6 @@ import { handleLogout } from '@/redux/slices/auth';
 import { useAppDispatch } from '@/redux/store/store';
 import { handleSnackBar } from '@/redux/slices/snackbar';
 import { getNameFirstLetter } from '@/shared/name.util';
-
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -53,7 +53,8 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   justifyContent: 'center',
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+
+export const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
@@ -69,10 +70,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   const dispatch = useAppDispatch();
+  const [searchParams]=useSearchParams();
   const [anchorEl, setAnchorEl] = useState< null| HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState< null| HTMLElement>(null);
+  const [query, setQuery]=useState<string>(searchParams.get('q') as string);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const navigate=useNavigate();
+
+  const handleSearch=(event: ChangeEvent<HTMLInputElement>)=>{
+    setQuery(event.target.value);
+    if (event.target.value!==''){
+      navigate(`/user/search?q=`+event.target.value.toLowerCase().trim());
+    }
+  }
 
   const handleProfileMenuOpen = (event: MouseEvent<HTMLAnchorElement>) => {
     setAnchorEl(event.currentTarget as HTMLElement);
@@ -209,15 +220,17 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
           >
             2 Post
           </Typography>
-          <Search>
+          {auth.isAuthenticated && <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Search users…"
+              value={query}
+              onChange={handleSearch}
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
+          </Search>}
 
             {auth.isAuthenticated ? <><Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

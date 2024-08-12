@@ -82,15 +82,39 @@ export const postController={
                 likeController.get('user', user.id, res),
                 commentController.getById('user', user.id)
             ]);
+
+            // const mPosts=await PostModel.aggregate([
+            //     {
+            //         $lookup:{
+            //             from: "follows",
+            //             localField: "_id",
+            //             foreignField: "user",
+            //             as: "posts"
+            //         }
+            //     },
+            //     {
+            //         $lookup:{
+            //             from: "likes",
+            //             localField: "_id",
+            //             foreignField: "user", 
+            //             as: "likes"
+            //         }
+            //     }
+            // ]);
+
+            // console.log('posts aggregated', mPosts);
+
             const [ posts, likes, comments ]=postResults;
         //  const comments= await commentController.get(req, res);
-            console.log('comments results', comments);
-            
+
             const likedPosts = posts.map((post) => {
                 const isLiked = likes.some((like: any) => like.post.toString() === post._id.toString());
                 const totalComments = comments.filter((comment: any)=>comment.post.toString() === post._id.toString());
                 return { ...post.toObject(), comments: totalComments, isLiked };  
             });            
+
+            // console.log('liked posts', likedPosts);
+
             if (!posts) {
                 return res.status(RESOURCE_NOT_FOUND).json({ error: 'Post not found' });
             }
@@ -101,6 +125,7 @@ export const postController={
             throw new Error(error.message);
         }
     },
+    
     async delete(req: Request, res: Response){
         try {
             const postId = req?.params?.id || '';

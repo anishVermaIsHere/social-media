@@ -20,7 +20,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { ROUTES } from "../routes/routeslinks";
 import { loginSchema } from "../shared/validation/user";
 import { handleSnackBar } from "../redux/slices/snackbar";
-import userAPI from "../shared/services/api/user";
+import userAPI from "../shared/services/api/auth";
 import { handleAuth } from "../redux/slices/auth";
 import { useAppDispatch } from "../redux/store/store";
 import Spinner from "../shared/widgets/Spinner";

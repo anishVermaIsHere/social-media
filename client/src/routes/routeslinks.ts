@@ -14,6 +14,7 @@ export const ROUTES={
     ACCOUNT:'account',
     PROFILE:'profile',
     CHANGE_PWD:'change-password',
+    SEARCH: '/user/search',
     POST:'posts/:id',
     EDIT_POST:'edit/:id',
     ALL_POSTS:'posts'

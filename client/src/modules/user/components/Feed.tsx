@@ -8,20 +8,7 @@ import AlertCard from "@/shared/widgets/AlertCard";
 import NoData from "@/shared/widgets/NoData";
 
 
-// export const addLikesInPost=(post: any, posts: any)=>{
-//   let isLikedByMe=false;
-//     posts.likes.some((like: any) => {
-//       if (like.post === post._id) {
-//         isLikedByMe = true;
-//         return true;  
-//       } else {
-//         return false;
-//       }
-//     });
 
-//     return { ...post, isLikedByMe };
-    
-// }
 const Feed = () => {
   const { isPending, error, isError, data } = useQuery({
     queryKey: ["posts"],
@@ -40,8 +27,9 @@ const Feed = () => {
     return <NoData message="No posts..."/> 
    }
   if (isError) {
-    return <AlertCard message={error.message} severity="error" />;
+    return <AlertCard message={error.message} severity="error" />
   }
+
   return (
     <>
       <Item elevation={0}>
