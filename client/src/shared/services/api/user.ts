@@ -5,6 +5,9 @@ import axiosInstance from '../AxiosInterceptor';
 const URL='/api/v1/user'
 
 const userAPI={
+    async posts(){
+        return await axiosInstance.get(`${URL}/posts`);
+    },
     async search(query: string): Promise<AxiosResponse<any, any>>{
         return await axiosInstance.post(`${URL}/search`, { query });        
     },

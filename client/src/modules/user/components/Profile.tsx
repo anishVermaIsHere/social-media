@@ -4,7 +4,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import GridPostCard from "./GridPostCard";
 import { useQuery } from "@tanstack/react-query";
-import postAPI from "@/shared/services/api/post";
+import userAPI from "@/shared/services/api/user";
 import Spinner from "@/shared/widgets/Spinner";
 import AlertCard from "@/shared/widgets/AlertCard";
 import NoData from "@/shared/widgets/NoData";
@@ -15,14 +15,14 @@ const Profile = () => {
   const auth=useAppSelector(state=>state.auth);
   const userName=`${auth.firstName} ${auth.lastName}`;
   const { isPending, error, isError, data } = useQuery({
-    queryKey: ['posts'],
-    queryFn: async() => await postAPI.fetch(),
+    queryKey: ['userData'],
+    queryFn: async() => await userAPI.posts(),
   });
-  const posts=data?.data;
+  const userData=data?.data;
 
   const user={
-    followers: 753,
-    following: 49,
+    followers: userData?.followers,
+    following: userData?.following,
   }
 
 
@@ -66,7 +66,7 @@ const Profile = () => {
         <Typography mt={4} px={5} variant="body2">POSTS</Typography>
         <Divider sx={{my: 1}} />
         <Grid container>
-          {posts.posts.length ? posts?.posts?.map((post: any)=><Grid key={post?._id} item xs={12} sm={4} md={4}>
+          {userData.posts.length ? userData?.posts?.map((post: any)=><Grid key={post?._id} item xs={12} sm={4} md={4}>
             <GridPostCard {...post} />
           </Grid>)
           :

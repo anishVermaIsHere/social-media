@@ -5,8 +5,9 @@ import { decodedUser } from "../shared/utils/token/token.js";
 import resMessage from "../shared/i18n/msgreader.js";
 import { HTTP_CODES } from "../shared/constants/constant.js";
 import UserModel from "../database/models/user.js";
+import PostModel from "../database/models/post.js";
 
-const { CREATE, SUCCESS, BAD_REQUEST }=HTTP_CODES;
+const { CREATE, SUCCESS, RESOURCE_NOT_FOUND }=HTTP_CODES;
 
 
 export const userController={
@@ -47,14 +48,34 @@ export const userController={
             throw new Error(error.message);
         }
     },
+    async posts(req: Request, res: Response){
+        try {
+            const user=decodedUser(req);
+            const postResults=await Promise.all([
+                PostModel.find({ user: user.id }).populate("user", ["-password", "-createdAt", "-updatedAt"]).sort('-createdAt'),
+                FollowModel.find({ user: user.id }),
+                FollowModel.find({ following: user.id })
+            ]);
+
+            const [ posts, following, followers ]=postResults; 
+      
+            if (!posts) {
+                return res.status(RESOURCE_NOT_FOUND).json({ error: 'Post not found' });
+            }
+            return res.status(SUCCESS).json({ posts, following: following.length, followers: followers.length });
+
+        } catch (error:any) {
+            console.log('API: error while getting post of logined user', error.message);
+            throw new Error(error.message);
+        }
+    },
     async follow(req: Request, res: Response){
         try {
             const user=decodedUser(req);
             const followingId=req.body.id;
 
             const followed = await FollowModel.find({ user: user.id, following: followingId });
-            console.log('Follow', followed);
-
+            
             if (followed.length) {
                 throw new Error("You are already following this user");
             }

@@ -67,7 +67,7 @@ export default function OptionMenu({ anchorEl, postId, open, handleClose }: Opti
               // toast.error(`${error}`);
           }
           else { 
-              queryClient.invalidateQueries({ queryKey: ['posts'] }); 
+              queryClient.invalidateQueries({ queryKey: ['userData'] }); 
           }
 
         }
