@@ -22,7 +22,7 @@ const Profile = () => {
 
   const user={
     followers: userData?.followers,
-    following: userData?.following,
+    following: userData?.following
   }
 
 

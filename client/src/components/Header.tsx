@@ -71,12 +71,12 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   const dispatch = useAppDispatch();
   const [searchParams]=useSearchParams();
+  const navigate=useNavigate();
   const [anchorEl, setAnchorEl] = useState< null| HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState< null| HTMLElement>(null);
   const [query, setQuery]=useState<string>(searchParams.get('q') as string);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const navigate=useNavigate();
 
   const handleSearch=(event: ChangeEvent<HTMLInputElement>)=>{
     setQuery(event.target.value);

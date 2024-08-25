@@ -18,7 +18,6 @@ const Post = () => {
     });
 
     const post=data?.data;
-    console.log('post', post);
 
   if (isLoading || isPending) {
     return (

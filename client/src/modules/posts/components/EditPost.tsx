@@ -1,9 +1,11 @@
-import { useRef, ChangeEvent, MouseEvent } from "react";
+import { useState, useRef, ChangeEvent, MouseEvent,  useEffect } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import * as z from "zod";
+import { useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { postSchema } from "../../../shared/validation/post";
+import { editSchema } from "../../../shared/validation/post";
 import {
   Box,
   Button,
@@ -13,24 +15,53 @@ import {
   TextField,
   Grid,
 } from "@mui/material";
-import ClearIcon from '@mui/icons-material/Clear';
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import Item from "../../../components/Item";
 import { handleSnackBar } from "../../../redux/slices/snackbar";
 import { useAppDispatch } from "../../../redux/store/store";
 import postAPI from "../../../shared/services/api/post";
+import Spinner from "@/shared/widgets/Spinner";
+import ClearIcon from '@mui/icons-material/Clear';
+// import { defaultImage } from "./PostCard";
 
-const imagePreviewStyle = {
-  height: "200px",
-  width: "180px",
-  // objectFit:'contain',
-  marginBlock: "0.8rem",
-};
 
-type Schema = z.infer<typeof postSchema>;
+type Schema = z.infer<typeof editSchema>;
 
-const Create = () => {
+
+// async function urlToBlob(imageUrl: string) {
+//   try {
+//     const response = await fetch(imageUrl);
+//     const blob = await response.blob();
+//     return blob;
+//   } catch (error) {
+//     console.error('Error converting URL to Blob:', error);
+//   }
+// }
+
+// async function urlToFile(imageUrl: string, fileName: string, mimeType: string){
+//   try {
+//     const response = await fetch(imageUrl);
+//     const blob = await response.blob();
+//     return new File([blob], fileName, { type: mimeType });
+//   } catch (error) {
+//     console.error("Error converting URL to File:", error);
+//     return null;
+//   }
+// }
+
+
+const EditPost = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const params=useParams();
+  const { isLoading, isSuccess, data } = useQuery({
+    queryKey: ['edit', params.id],
+    queryFn: async() => await postAPI.fetchById(params.id || ''),
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+  });
+  const postData=data?.data;
+  const [prevImage, setPrevImage]=useState<string>(postData?.image);
+
   const {
     register,
     handleSubmit,
@@ -38,46 +69,83 @@ const Create = () => {
     control,
     reset,
     watch,
-  } = useForm<Schema>({ resolver: zodResolver(postSchema) });
+    setValue
+  } = useForm<Schema>({ resolver: zodResolver(editSchema) });
   const dispatch = useAppDispatch();
   const image = watch("image");
-  const imagePreview = image ? URL.createObjectURL(image) : null;
+  const imagePreview = image instanceof File ? URL.createObjectURL(image) : prevImage; 
+
+  useEffect(() => {
+    if (isSuccess && postData) {
+      // urlToFile(postData.image, "image.jpg", "image/jpeg").then((blob)=>{
+      //   if(blob){
+      //     setValue('image', blob);
+      //   }
+      // });
+      setPrevImage(postData?.image);
+      setValue('image', postData?.image);
+      setValue('title', postData?.title);
+      setValue('content', postData?.content);
+      setValue('tags', postData?.tags.join(','));
+    }
+  }, [isSuccess, postData, setValue]);
 
   const onSubmit: SubmitHandler<Schema> = async (data: Schema) => {
     try {
+    setPrevImage(imagePreview);
       let fd!:any;
-      if(!data.image){
-        fd=data;
+      if(prevImage){
+        await postAPI.update(params?.id as string, {
+          title: data.title,
+          image: data?.image,
+          content: data.content,
+          tags: data.tags
+        })
       } else {
-        fd = new FormData();
-        fd.append("image", data?.image);
-        fd.append("title", data.title);
-        fd.append("content", data.content);
-        fd.append("tags", data.tags);
+        if(!data.image){
+          fd=data;
+        } else {
+          console.log('data', data)
+          fd = new FormData();
+          fd.append("image", data?.image);
+          fd.append("title", data.title);
+          fd.append("content", data.content);
+          fd.append("tags", data.tags); 
+        }
+        const response = await postAPI.update(params?.id as string, fd);
+        console.log('response', response);
+        if (response.data?.statusCode === 200) {
+          dispatch(
+            handleSnackBar({
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: "Post updated successfully"
+            })
+          );
+        }
       }
-      console.log(data);
-      const response = await postAPI.create(fd);
-      console.log('response',response)
       reset();
-      if (response.data?.statusCode === 201) {
-        dispatch(
-          handleSnackBar({
-            snackOpen: true,
-            snackType: "success",
-            snackMessage: "Post created successfully",
-          })
-        );
-      }
+      console.log('data', data);
+     
     } catch (error: unknown) {
       if (error instanceof Error) {
         dispatch(
           handleSnackBar({
             snackOpen: true,
             snackType: "error",
-            snackMessage: error?.message,
+            snackMessage: error?.message
           })
         );
       }
+    }
+  };
+
+  const deleteImage=(e: MouseEvent<HTMLDivElement>)=>{ 
+    e.stopPropagation();
+    reset({ image: undefined });
+    setPrevImage("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset the input value to allow re-selection of the same file
     }
   };
 
@@ -87,22 +155,18 @@ const Create = () => {
     }
   };
 
-  const deleteImage=(e:MouseEvent )=>{ 
-    e.stopPropagation();
-    reset({ image: undefined });
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Reset the input value to allow re-selection of the same file
-    }
-  };
-
+  if(isLoading){
+    return <Spinner />
+  }
+  
   return (
     <Item elevation={0}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={12} sx={{ margin: "auto" }}>
           <Typography component="h2" variant="h6" color="primary" gutterBottom>
-            Create Post
+            Edit Post
           </Typography>
-          <Box sx={{ textAlign: "left" }}>
+          <Box sx={{ textAlign: "left"}}>
             <FormControl
               fullWidth
               component="form"
@@ -123,31 +187,31 @@ const Create = () => {
                   borderRadius: "0.375rem",
                   cursor: "pointer",
                   backgroundColor: "#f2f2f2", 
-                  backgroundImage:`url(${imagePreview})`,
-                  backgroundSize: "contain",
+                  backgroundImage:`url(${imagePreview })`,
+                  backgroundSize: "cover",
                   backgroundRepeat: "no-repeat",
                   backgroundPositionX:"center"
                 }}
               >
-                {imagePreview && (
+                 {imagePreview && (
                     <div 
                     onClick={deleteImage}
                     style={{
-                      position: 'absolute',
-                      right: '10px',
-                      top:'10px',
-                      background: '#fff',
-                      borderRadius: '50%',
-                      height: '30px',
-                      width: '30px',
-                      display:'grid',
-                      placeItems: 'center' 
+                        position: 'absolute',
+                        right: '10px',
+                        top:'10px',
+                        background: '#fff',
+                        borderRadius: '50%',
+                        height: '30px',
+                        width: '30px',
+                        display:'grid',
+                        placeItems: 'center' 
                     }}>
                     <ClearIcon />
-                    </div>
+                    </div>                  
                 )}
 
-                {!imagePreview && <>
+                {(!imagePreview || !postData.image) && <>
                   <AddPhotoAlternateIcon sx={{ fontSize: '5rem' }} />
                   <Typography component="p" mt={2}>
                     Upload photo
@@ -259,7 +323,7 @@ const Create = () => {
                     minWidth: { xs: 100, md: 200 },
                   }}
                 >
-                  Post
+                  Update
                 </Button>
               </Box>
             </FormControl>
@@ -270,4 +334,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default EditPost;

@@ -6,6 +6,7 @@ import { useAppSelector } from "@/redux/store/store.ts";
 
 function App() {
   const auth = useAppSelector((state) => state.auth);
+
   return (
     <>
       <Navbar auth={auth} />

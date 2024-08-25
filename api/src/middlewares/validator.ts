@@ -10,6 +10,7 @@ const validator =(schema: AnyZodObject) =>(req: Request, res: Response, next: Ne
         query: req.query,
         params: req.params,
       });
+
       next();
       
     } catch (error: any) {

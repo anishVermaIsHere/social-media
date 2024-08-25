@@ -2,12 +2,12 @@ import { Suspense } from 'react';
 import {Routes, Route} from 'react-router-dom';
 import { ROUTES } from './routeslinks';
 import Spinner from '@/shared/widgets/Spinner';
-import { Homepage, Registerpage, Protected, Feed, Layout, Profile, Create, ErrorPage, Post, SearchResult } from '@/routes/LazyComponents';
+import { Homepage, Registerpage, Protected, Feed, Layout, Profile, Create, ErrorPage, Post, SearchResult, EditPost } from '@/routes/LazyComponents';
 
 
 
 const AppRoutes= () => {
-  const { REGISTER,FEEDS,PROFILE,CREATE_POST, POST, SEARCH }=ROUTES;
+  const { REGISTER,FEEDS,PROFILE,CREATE_POST, POST, SEARCH, EDIT_POST }=ROUTES;
 
   return (
     <Routes>
@@ -19,7 +19,8 @@ const AppRoutes= () => {
             <Route path={POST} element={<Suspense fallback={<Spinner />}><Post /></Suspense>} />
             <Route path={CREATE_POST} element={<Suspense fallback={<Spinner />}><Create /></Suspense>} />
             <Route path={PROFILE} element={<Suspense fallback={<Spinner />}><Profile /></Suspense>} />
-          <Route path={SEARCH} element={<Suspense fallback={<Spinner />}><SearchResult /></Suspense>} />
+            <Route path={SEARCH} element={<Suspense fallback={<Spinner />}><SearchResult /></Suspense>} />
+            <Route path={EDIT_POST} element={<Suspense fallback={<Spinner />}><EditPost /></Suspense>} />
           </Route>
 
         </Route>

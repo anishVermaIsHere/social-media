@@ -1,22 +1,28 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import snackBar from '../slices/snackbar';
 import authSlice from '../slices/auth';
+import postSlice from '../slices/post';
 import { useSelector,useDispatch,TypedUseSelectorHook } from 'react-redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { PersistPartial } from "redux-persist/es/persistReducer";
 
 
-const persistConfig = {
+
+const authReducer = persistReducer({
     key: 'auth',
     storage,
-};
+}, authSlice);
+const postReducer = persistReducer({
+    key: 'post',
+    storage
+}, postSlice);
 
-
-const persistedReducer = persistReducer(persistConfig, authSlice);
 
 const rootReducer = combineReducers({ 
-    auth: persistedReducer,
-    snackbar: snackBar
+    auth: authReducer,
+    snackbar: snackBar,
+    posts: postReducer
 });
 
 const store = configureStore({
@@ -36,6 +42,8 @@ store.subscribe(()=>{
 
 export const persistor = persistStore(store); 
 export default store;
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof store.getState> & {
+    _persist: PersistPartial & { rehydrated: boolean };
+  };
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const useAppDispatch: () => typeof store.dispatch = useDispatch;

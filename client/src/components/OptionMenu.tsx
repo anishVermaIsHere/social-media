@@ -3,8 +3,7 @@ import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import postAPI from '@/shared/services/api/post';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -50,33 +49,28 @@ const StyledMenu = styled((props: MenuProps) => (
 type OptionMenuProps={
     anchorEl: HTMLElement | null, 
     open: boolean, 
-    postId: string,
+    slugId: string,
     handleClose: (event: React.MouseEvent)=>void,
+    deleteHandler: (slugId: string)=>void,
+    editHandler: (slugId: string)=>void
 }
 
-export default function OptionMenu({ anchorEl, postId, open, handleClose }: OptionMenuProps) {
-    const queryClient=useQueryClient();
-    const deleteMutation = useMutation({
-        mutationFn: async(postId: string )=>{
-          await postAPI.delete(postId);
-        },
-        onSuccess: () => {
-        },
-        onSettled:async(_,error)=>{
-          if(error){
-              // toast.error(`${error}`);
-          }
-          else { 
-              queryClient.invalidateQueries({ queryKey: ['userData'] }); 
-          }
+export default function OptionMenu({ anchorEl, slugId, open, handleClose, deleteHandler, editHandler }: OptionMenuProps) {    
 
-        }
-    })
+    // const { data, isLoading, isError, error }=useQuery({
+    //   query: ['edit'],
+    //   queryFn: async()=>{}
+    // });
     
-    const deletePost=(event: React.MouseEvent, postId: string )=>{
-         deleteMutation.mutate(postId);
-        handleClose(event);
-    }
+  const handleDelete=(event: React.MouseEvent, slugId: string)=>{
+    deleteHandler(slugId);
+    handleClose(event);
+  };
+
+  const handleEdit=(event: React.MouseEvent, slugId: string)=>{
+    editHandler(slugId);
+    handleClose(event);
+  };
 
   return (
     <div>
@@ -105,11 +99,11 @@ export default function OptionMenu({ anchorEl, postId, open, handleClose }: Opti
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
+        <MenuItem onClick={(e)=>handleEdit(e, slugId)} disableRipple>
           <EditIcon />
           Edit
         </MenuItem>
-        <MenuItem onClick={(event)=> deletePost(event, postId)} disableRipple>
+        <MenuItem onClick={(e)=>handleDelete(e, slugId)} disableRipple>
           <DeleteIcon />
           Delete
         </MenuItem>

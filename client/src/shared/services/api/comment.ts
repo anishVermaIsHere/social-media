@@ -4,7 +4,6 @@ const URL='/api/v1/comment';
 
 const commentAPI={
     async create(data: any){
-        console.log('data', data);
         return axiosInstance({
             url: `${URL}/`,
             method: 'POST',
@@ -13,7 +12,8 @@ const commentAPI={
     },
     async delete(commentId: string){
         return axiosInstance({
-            url: `${URL}/${commentId}`
+            url: `${URL}/${commentId}`,
+            method: 'DELETE'
         })
     },
     async get(){

@@ -19,11 +19,14 @@ export const postController={
     async create(req: Request<{}, CreatePostType["body"]>, res: Response){
         try {
             const user=decodedUser(req);
-            const post={
+            const post = {
                 ...req.body,
-                tags: req.body.tags.split(',').map((tag: string)=>tag.trim()),
+                tags: req.body.tags?.includes(',')
+                  ? req.body.tags.split(',').map((tag: string) => tag?.trim()) 
+                  : [req.body.tags?.trim()], 
                 user: user.id
-            };            
+              };        
+            console.log('req.body', req.body)
             const postDoc=await PostModel.create(post);
             if(postDoc&&postDoc._id){
                 return res.status(CREATE).json({message:resMessage.readMessage('post','create'), statusCode: CREATE });
@@ -115,9 +118,23 @@ export const postController={
             if(post.image!=='' && isDeleted.acknowledged){
                 await deleteUploadImage(imageId); // delete image from cloudinary
             }
-            return res.status(SUCCESS).json({ message: resMessage.readMessage("post", "deletesuccess")});
+            return res.status(SUCCESS).json({ message: resMessage.readMessage("post", "deletesuccess")}); 
         } catch (error: any) {
             console.log('API: error while deleting posts', error.message);
+            throw new Error(error.message);
+        }
+    },
+    async update(req: Request, res: Response){
+        try {
+            const user=decodedUser(req);
+            const postData=req.body;
+            const postId = req?.params?.id || ''; 
+
+            console.log('BODY', req.body);
+            console.log('BUFFER', req.file?.buffer)
+           const result= await PostModel.updateOne({ _id: postId }, postData);
+        } catch (error: any) {
+            console.log('API: error while updating post', error.message);
             throw new Error(error.message);
         }
     }

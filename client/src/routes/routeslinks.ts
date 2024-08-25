@@ -16,6 +16,6 @@ export const ROUTES={
     CHANGE_PWD:'change-password',
     SEARCH: '/user/search',
     POST:'posts/:id',
-    EDIT_POST:'edit/:id',
+    EDIT_POST:'/user/post/:id/edit',
     ALL_POSTS:'posts'
 }
