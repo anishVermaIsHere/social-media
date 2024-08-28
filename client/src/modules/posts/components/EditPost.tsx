@@ -105,7 +105,6 @@ const EditPost = () => {
         if(!data.image){
           fd=data;
         } else {
-          console.log('data', data)
           fd = new FormData();
           fd.append("image", data?.image);
           fd.append("title", data.title);
@@ -113,7 +112,6 @@ const EditPost = () => {
           fd.append("tags", data.tags); 
         }
         const response = await postAPI.update(params?.id as string, fd);
-        console.log('response', response);
         if (response.data?.statusCode === 200) {
           dispatch(
             handleSnackBar({
@@ -124,9 +122,7 @@ const EditPost = () => {
           );
         }
       }
-      reset();
-      console.log('data', data);
-     
+      reset();     
     } catch (error: unknown) {
       if (error instanceof Error) {
         dispatch(

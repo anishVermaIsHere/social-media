@@ -28,3 +28,8 @@ export const loginSchema = object({
     .min(8, { message: "Password should be of minimum 8 characters" })
     .max(16, { message: "Password should be of minimum 16 characters" }),
 });
+
+export const recoverEmailSchema = object({
+  email: string({ required_error: "Email is required"})
+    .email({ message: "Enter a valid email" })
+});

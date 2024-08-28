@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import axiosInstance from '../AxiosInterceptor';
 
 
@@ -16,6 +16,9 @@ const userAPI={
     },
     async unfollow(id: string){
         return await axiosInstance.post(`${URL}/unfollow`, { id });
+    },
+    async recoverAccount(email: string){
+        return await axios.post(`${import.meta.env.VITE_BASE_URL}${URL}/recover-account`, { email });
     }
 };
 

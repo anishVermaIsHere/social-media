@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import Item from "@/components/Item";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -52,9 +52,9 @@ const Profile = () => {
             <Item elevation={0}>
               <Box component="div" m={1} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h6">{userName ?  userName : "David Paul"}</Typography>
-                <Button variant="outlined" sx={{ mx: 2 }}>
+                {/* <Button variant="outlined" sx={{ mx: 2 }}>
                   Edit Profile
-                </Button>
+                </Button> */}
               </Box>
               <Box m={1} sx={{ display:'flex', justifyContent:'start' }}>
                 <Typography mr={2} align="left" variant="body1">{user.followers} <br/>Followers</Typography>

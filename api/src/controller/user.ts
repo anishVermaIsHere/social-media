@@ -6,6 +6,7 @@ import resMessage from "../shared/i18n/msgreader.js";
 import { HTTP_CODES } from "../shared/constants/constant.js";
 import UserModel from "../database/models/user.js";
 import PostModel from "../database/models/post.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const { CREATE, SUCCESS, RESOURCE_NOT_FOUND }=HTTP_CODES;
 
@@ -121,9 +122,21 @@ export const userController={
             const userId=decodedUser(req);
             const followers=await FollowModel.find({ following: userId });
             return res.status(SUCCESS).json({ followers });
-
         } catch (error: any) {
             console.log('API: error while getting followers', error.message);
+            throw new Error(error.message);
+        }
+    },
+    async recoverAccount(req: Request, res: Response){
+        try {
+            const email=req.body.email;
+            const userDoc=await UserModel.findOne({ email });
+            if(userDoc && userDoc._id){
+                
+            }
+            return res.status(SUCCESS).json({ uid: uuidv4() });
+        } catch (error: any) {
+            console.log('API: error while recover account', error.message);
             throw new Error(error.message);
         }
     }

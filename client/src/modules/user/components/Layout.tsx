@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Item from "../../../components/Item";
-import { mainListItems, rightListItems } from "./sidebar/ListItem";
+import { mainListItems } from "./sidebar/ListItem";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Layout = () => {
@@ -21,11 +21,11 @@ const Layout = () => {
        <Grid item xs={12} md={ rightSection ? 7 : 9} p={2} sx={{ overflow: 'auto'}}>
         <Outlet />
         </Grid>
-        {rightSection && <Grid item xs={12} md={ rightSection ? 2 : 0}>
+        {/* {rightSection && <Grid item xs={12} md={ rightSection ? 2 : 0}>
           <Item>
           {rightListItems}
           </Item>
-        </Grid>}
+        </Grid>} */}
       </Grid>
     </Box>
   );

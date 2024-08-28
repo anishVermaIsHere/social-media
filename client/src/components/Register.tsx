@@ -20,7 +20,7 @@ import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../routes/routeslinks';
 import { useAppDispatch} from '../redux/store/store';
 import { registerSchema } from '../shared/validation/user';
-import userAPI from '../shared/services/api/auth';
+import authAPI from '../shared/services/api/auth';
 import { handleSnackBar } from '../redux/slices/snackbar';
 
 
@@ -46,7 +46,7 @@ export default function Register() {
   
   const onSubmit: SubmitHandler<Schema>= async(data:Schema) => {
     try {
-      const res= await userAPI.register(data);
+      const res= await authAPI.register(data);
       if(res.status===201){
         dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: res.data.message }));
       }

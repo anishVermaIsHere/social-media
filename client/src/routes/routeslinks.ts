@@ -5,7 +5,8 @@ export const ROUTES={
     LOGIN:'/login',
     REGISTER:'/register',
     ABOUT:'/about',
-
+    RECOVER_ACC: '/recover',
+    RESET_PWD: '/resetpassword',
     /* protected routes */
     USER:'/user',
     FEEDS:'posts',

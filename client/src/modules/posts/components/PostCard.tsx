@@ -5,7 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Link from '@mui/material/Link';
-import { NavLink, useParams, useLocation } from 'react-router-dom';
+import { NavLink, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -46,9 +46,9 @@ export default function PostCard({ post }: { post: IPost }) {
   const postUser=post.user;
   const params=useParams();
   const path=useLocation().pathname;
+  const navigate=useNavigate();
 
 
-  
   const deleteMutation = useMutation({
     mutationFn: async(commentId: string )=>{
       await commentAPI.delete(commentId);
@@ -64,7 +64,10 @@ export default function PostCard({ post }: { post: IPost }) {
       }
     }
   });
-     
+
+  const goToComments=()=>{
+    navigate(`${USER}/${FEEDS}/${post._id}`);
+  }
   
   const handleLike=async(postId: string)=>{
       setToggle(!toggle);
@@ -90,7 +93,7 @@ export default function PostCard({ post }: { post: IPost }) {
   };
 
   const editHandler=(slugId: string)=>{
-    console.log('comment id', slugId);
+    console.log('comm', slugId);
   };
 
   const deleteHandler=async(slugId: string)=>{
@@ -131,7 +134,7 @@ export default function PostCard({ post }: { post: IPost }) {
           <Typography sx={{ fontSize: '1rem ', ml: 1 }}>Like</Typography>
         </IconButton>
 
-        <IconButton aria-label="add comments" title='comments' sx={{ borderRadius: 0 }}>
+        <IconButton aria-label="add comments" title='comments' sx={{ borderRadius: 0 }} onClick={goToComments}>
           <CommentOutlinedIcon />
           <Typography sx={{ fontSize: '1rem ', ml: 1 }}>Comments</Typography>
         </IconButton>

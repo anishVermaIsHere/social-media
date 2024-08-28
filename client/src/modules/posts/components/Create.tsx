@@ -20,12 +20,6 @@ import { handleSnackBar } from "../../../redux/slices/snackbar";
 import { useAppDispatch } from "../../../redux/store/store";
 import postAPI from "../../../shared/services/api/post";
 
-const imagePreviewStyle = {
-  height: "200px",
-  width: "180px",
-  // objectFit:'contain',
-  marginBlock: "0.8rem",
-};
 
 type Schema = z.infer<typeof postSchema>;
 
@@ -55,9 +49,7 @@ const Create = () => {
         fd.append("content", data.content);
         fd.append("tags", data.tags);
       }
-      console.log(data);
       const response = await postAPI.create(fd);
-      console.log('response',response)
       reset();
       if (response.data?.statusCode === 201) {
         dispatch(
@@ -124,7 +116,7 @@ const Create = () => {
                   cursor: "pointer",
                   backgroundColor: "#f2f2f2", 
                   backgroundImage:`url(${imagePreview})`,
-                  backgroundSize: "contain",
+                  backgroundSize: "cover",
                   backgroundRepeat: "no-repeat",
                   backgroundPositionX:"center"
                 }}
