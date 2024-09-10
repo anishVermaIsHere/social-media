@@ -31,10 +31,10 @@ const postAPI={
             url: `${URL}/${postId}`
         });
     },
-    async fetch(){
+    async fetch(page: number){
         return await axiosInstance({
             method:'GET',
-            url: `${URL}/`
+            url: `${URL}?page=${page}`
         });
     },
     async delete(postId: string){

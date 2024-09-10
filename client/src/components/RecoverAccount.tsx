@@ -2,49 +2,69 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { NavLink } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { Link } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useAppDispatch} from '../redux/store/store';
 import userAPI from '../shared/services/api/user';
 import { handleSnackBar } from '../redux/slices/snackbar'; 
-import { recoverEmailSchema } from '@/shared/validation/user';
+import { recoverEmailSchema, OTPSchema } from '@/shared/validation/user';
+import Spinner from '@/shared/widgets/Spinner';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/routes/routeslinks';
+
 
 type Schema = z.infer<typeof recoverEmailSchema>;
+type otpSchema =  z.infer<typeof OTPSchema>
 
-export default function RecoverAccount() {
-  const { register, handleSubmit, reset, formState:{ errors} }=useForm({ resolver: zodResolver(recoverEmailSchema)});
+export default function RecoverAccount(){
   const dispatch=useAppDispatch();
+  const navigate=useNavigate();
   const [hiddenEmail, setHiddenEmail]=useState('');
-  
-  const onSubmit:SubmitHandler<Schema> = async(data:Schema) => {
-    try {
-        console.log('data', data);
-      const res= await userAPI.recoverAccount(data.email);
+  const [accRecoverInfo, setAccRecoverInfo]=useState({} as { reqId: string, expiry: number });
+  const [isLoading, setIsLoading]=useState(false);
+  const { register, handleSubmit, reset, formState:{ errors} }=useForm({ resolver: zodResolver(hiddenEmail ? OTPSchema : recoverEmailSchema)});
 
-      // if(res.status===200){
-      //   dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: res.data.message }));
-      // }
-      // else {
-      //   dispatch(handleSnackBar({ snackOpen: true, snackType: "warning", snackMessage: res.data.message }));
-      // } 
+  
+  const submitEmail:SubmitHandler<Schema> = async(data:Schema) => {
+    try {
+      setIsLoading(true);
+      const res= await userAPI.recoverAccount(data.email);
+      if(res?.data){
+        setAccRecoverInfo({ reqId: res.data.requestId, expiry: res.data.expiresAt });
+        setHiddenEmail(data.email);
+      }
+      setIsLoading(false);
     } catch (error:any) {
       dispatch(handleSnackBar({ snackOpen: true, snackType: "error", snackMessage: error.message }));
     }
     reset();
-    setHiddenEmail(data.email);
   };
+  
+  const submitOTP:SubmitHandler<otpSchema>=async(data: otpSchema)=>{
+    try {
+      const res= await userAPI.sendOTP({ otp: data.otp, reqId: accRecoverInfo.reqId, expiry: accRecoverInfo.expiry });
+      console.log('res',res);
+      if(res.status===200){
+        dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: res.data.message}));
+        navigate(ROUTES.RESET_PWD);
+      }
+    } catch (error:any) {
+      dispatch(handleSnackBar({ snackOpen: true, snackType: "error", snackMessage: error.message }));
+    }
+    reset();
+  }
 
-  return (
-      <Container component="main" maxWidth="xs">
+  return isLoading ? 
+        <Spinner />
+        :
+        <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box mt={20}>
           <Avatar sx={{ m: 1, bgcolor: 'primary.main', mx:'auto'}}>
@@ -58,7 +78,10 @@ export default function RecoverAccount() {
           </Typography>
           {hiddenEmail && <Typography component='p' align='center'>Secret code has been sent on <strong>{hiddenEmail}</strong></Typography>}
 
-          <Box component="form" sx={{ mt:3 }} noValidate onSubmit={handleSubmit(onSubmit)}>
+          <Box 
+          component="form" sx={{ mt:3 }} 
+          noValidate 
+          onSubmit={handleSubmit(hiddenEmail ? submitOTP : submitEmail)}>
             <Grid container spacing={2}>
               {!hiddenEmail ? 
               <Grid item xs={12}>
@@ -90,10 +113,6 @@ export default function RecoverAccount() {
                   helperText={typeof errors.otp?.message === 'string' ? errors.otp.message : ''}
                 />
               </Grid>}
-
-              {/* <Grid item>
-                <Link component={NavLink} to="#" variant="body2">Resend</Link>
-              </Grid> */}
               
             </Grid>
             <Button
@@ -107,6 +126,5 @@ export default function RecoverAccount() {
           </Box>
         </Box>
       </Container>
-  );
 }
 

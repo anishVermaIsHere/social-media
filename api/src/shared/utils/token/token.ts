@@ -1,6 +1,7 @@
 import { Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken"; // dont import * as jwt here
 import { IToken } from "../../interfaces/index.js";
+import AppConfig from "../../../config/env.config.js";
 
 export interface IDecode extends JwtPayload {
   email: string;
@@ -23,8 +24,8 @@ export const decodedUser=(req: Request)=>{
 const tokenObject = {
   tokenEncode(payload) {
     const { id }=payload;
-    const accessToken= jwt.sign(payload, process.env.ACCESS_TOKEN_SEC_KEY!, { algorithm: "HS256", expiresIn: process.env.ACCESS_TOKEN_EXPIRY! });
-    const refreshToken=jwt.sign({ id }, process.env.REFRESH_TOKEN_SEC_KEY!, { algorithm: "HS256", expiresIn: process.env.REFRESH_TOKEN_EXPIRY! });
+    const accessToken= jwt.sign(payload, AppConfig.accessTokenKey, { algorithm: "HS256", expiresIn: AppConfig.accessTokenExpiry });
+    const refreshToken=jwt.sign({ id }, AppConfig.refreshTokenKey, { algorithm: "HS256", expiresIn: AppConfig.refreshTokenExpiry });
     return { accessToken, refreshToken}
 
   },
@@ -33,10 +34,10 @@ const tokenObject = {
     try {
       let decode={} as IDecode;
       if(tokenType===TOKEN['ACCESS_TOKEN']){
-        decode = jwt.verify(token, process.env.ACCESS_TOKEN_SEC_KEY!) as IDecode;
+        decode = jwt.verify(token, AppConfig.accessTokenKey) as IDecode;
       }
       if(tokenType===TOKEN['REFRESH_TOKEN']){
-        decode = jwt.verify(token, process.env.REFRESH_TOKEN_SEC_KEY!) as IDecode;
+        decode = jwt.verify(token, AppConfig.refreshTokenKey) as IDecode;
       }
       if (decode?.id) {
         (<TRequestAuth>req)["decode"] = decode;

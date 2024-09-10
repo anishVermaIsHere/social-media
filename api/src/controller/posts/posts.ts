@@ -21,15 +21,15 @@ export const postController={
             const user=decodedUser(req);
             const post = {
                 ...req.body,
-                tags: req.body.tags?.includes(',')
-                  ? req.body.tags.split(',').map((tag: string) => tag?.trim()) 
+                tags: req.body.tags?.includes(',') 
+                ? req.body.tags.split(',').map((tag: string) => tag?.trim()) 
                   : [req.body.tags?.trim()], 
                 user: user.id
-              };        
-            console.log('req.body', req.body)
+            };        
+            console.log('req.body', req.body);
             const postDoc=await PostModel.create(post);
             if(postDoc&&postDoc._id){
-                return res.status(CREATE).json({message:resMessage.readMessage('post','create'), statusCode: CREATE });
+                return res.status(CREATE).json({ message: resMessage.readMessage('post','create'), statusCode: CREATE });
             }
         } catch (error: any) {
             console.log('API: error while post creation', error.message);
@@ -81,6 +81,16 @@ export const postController={
     async getByUser(req: Request, res: Response) {
         try {
             const user=decodedUser(req);
+            let page=1;
+            let limit=1;
+            let totalPages=1;
+            
+            if(req.query.page){
+                page=parseInt(req.query.page as string);
+            }
+            if(req.query.limit){
+                limit=parseInt(req.query.limit as string);
+            }
             const following=await FollowModel.find({ user: user.id });
             const allUsers=following.map(u=>u.following?.toString());
 
@@ -92,16 +102,17 @@ export const postController={
 
             const [ posts, likes, comments ]=postResults; 
 
-            const likedPosts = posts.map((post) => {
-                const isLiked = likes.some((like: any) => like.post.toString() === post._id.toString());
-                const totalComments = comments.filter((comment: any)=>comment.post.toString() === post._id.toString());
+            const likedPosts = posts.map((post) => { 
+                const isLiked = likes.some((like: any) => like.post.toString() === post._id.toString()); 
+                const totalComments = comments.filter((comment: any)=>comment.post.toString() === post._id.toString()); 
                 return { ...post.toObject(), comments: totalComments, isLiked };  
             });            
 
             if (!posts) {
                 return res.status(RESOURCE_NOT_FOUND).json({ error: 'Post not found' });
             }
-            return res.status(SUCCESS).json({ posts: likedPosts });
+            totalPages=Math.ceil(likedPosts.length/limit);
+            return res.status(SUCCESS).json({ posts: likedPosts.slice((page-1)*limit, page*limit), totalPages });
 
         } catch (error:any) {
             console.log('API: error while getting post of logined user', error.message);
@@ -129,9 +140,6 @@ export const postController={
             const user=decodedUser(req);
             const postData=req.body;
             const postId = req?.params?.id || ''; 
-
-            console.log('BODY', req.body);
-            console.log('BUFFER', req.file?.buffer)
            const result= await PostModel.updateOne({ _id: postId }, postData);
         } catch (error: any) {
             console.log('API: error while updating post', error.message);

@@ -13,8 +13,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import FeedIcon from '@mui/icons-material/Feed';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -24,6 +22,8 @@ import { handleLogout } from '@/redux/slices/auth';
 import { useAppDispatch } from '@/redux/store/store';
 import { handleSnackBar } from '@/redux/slices/snackbar';
 import { getNameFirstLetter } from '@/shared/name.util';
+import { ROUTES } from '@/routes/routeslinks';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -77,6 +77,9 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
   const [query, setQuery]=useState<string>(searchParams.get('q') as string);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const matches = useMediaQuery('(max-width:600px)');
+
+  const { CREATE_POST, FEEDS, PROFILE } = ROUTES;
 
   const handleSearch=(event: ChangeEvent<HTMLInputElement>)=>{
     setQuery(event.target.value);
@@ -147,50 +150,46 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem
+      onClick={
+        ()=>navigate(`/user/${FEEDS}`)
+      }
+      >
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
+          {/* <Badge badgeContent={4} color="error"> */}
             <FeedIcon />
-          </Badge>
+          {/* </Badge> */}
         </IconButton>
         <p>Feeds</p>
       </MenuItem>
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
+      <MenuItem
+      onClick={
+        ()=>navigate(`/user/${CREATE_POST}`)
+      }
+      >
+        <IconButton 
+        size="large"
+        aria-label="show 4 new mails" 
+        color="inherit"
+        >
+          {/* <Badge badgeContent={4} color="error"> */}
             <AddCircleIcon />
-          </Badge>
+          {/* </Badge> */}
         </IconButton>
         <p>Create post</p>
       </MenuItem>
-
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem href='' onClick={handleProfileMenuOpen}>
+      <MenuItem
+       onClick={
+        ()=>navigate(`/user/${PROFILE}`)
+      }
+      >
         <IconButton
           size="large"
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit"
+         
         >
           <AccountCircle />
         </IconButton>
@@ -203,15 +202,18 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
+          {matches && <IconButton
+            href=''
             size="large"
             edge="start"
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
+            aria-controls={mobileMenuId}
+            onClick={handleMobileMenuOpen}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton>}
           <Typography
             variant="h6"
             noWrap
@@ -234,7 +236,7 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
 
             {auth.isAuthenticated ? <><Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+              {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={4} color="error">
                   <MailIcon />
                 </Badge>
@@ -247,8 +249,8 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
                 <Badge badgeContent={17} color="error">
                   <NotificationsIcon />
                 </Badge>
-              </IconButton>
-              <IconButton
+              </IconButton> */}
+             { !matches && <IconButton
               href=''
               size="large"
               edge="end"
@@ -259,17 +261,16 @@ const Navbar:FC<{ auth:IAuth }> = ({ auth })=> {
               color="inherit"
               >
                 <UserProfile name={getNameFirstLetter(auth?.firstName)}/>
-              </IconButton>
+              </IconButton>}
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 href=''
                 size="large"
                 aria-label="show more"
-                aria-controls={mobileMenuId}
                 aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
                 color="inherit"
+                onClick={handleProfileMenuOpen}
               >
                 <MoreIcon />
               </IconButton>

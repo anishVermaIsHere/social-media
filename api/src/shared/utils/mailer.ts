@@ -1,47 +1,55 @@
 import nodemailer from "nodemailer";
+import AppConfig from "../../config/env.config.js";
 
+function generateEmailTemplate(otp: string) {
+  return `
+    <!DOCTYPE html>
+       <html lang="en">
+       <head>
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>2Post OTP page</title>
+        <style>
+        *{
+        font-family: "Arial";
+        }
+            h2 {
+            background-color:#3f51b5;
+            color:#fff;
+            padding: 0.5rem;
+            }
+        </style>
+        </head>
 
-const emailTemplate=`
-            <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>Document 28</title>
-                <style>
-                </style>
-                </head>
+        <body>
+        <h2>2Post</h2>
+        <p>Recover your account<p>
+         <p>Your OTP is <strong style="font-size:1.1rem">${otp}</strong><p>
+         <p>Use this OTP to reset your password. This OTP is valid for only 10 minutes.</p>
+        </body>
+    </html>
+    `;
+}
 
+export async function sendMail(recipientEmail: string, otp: string) {
+  const transporter = await nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // Use `true` for port 465, `false` for all other ports
+    auth: {
+      user: AppConfig.mail.senderMail,
+      pass: AppConfig.mail.password,
+    },
+  });
 
-                <body>
-                <h1>Title 28</h1>
-                </body>
-            </html>
-            `
+  // send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: `${AppConfig.mail.senderName} <${AppConfig.mail.senderMail}>`,
+    to: recipientEmail,
+    subject: `2Post Recover account OTP`,
+    text: `Hello User, your secret code ${otp}`,
+    html: generateEmailTemplate(otp),
+  });
 
-export async function sendMail(){
-    const transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // Use `true` for port 465, `false` for all other ports
-        auth: {
-          user: "maddison53@ethereal.email",
-          pass: "jn7jnAPss4f63QBp6D",
-        },
-    });
-      
-    // send mail with defined transport object
-    const info = await transporter.sendMail({
-        from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>', // sender address
-        to: "bar@example.com, baz@example.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: emailTemplate, 
-        });
-    
-    console.log("Message sent: %s", info.messageId);
-    // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-};
-
-
-sendMail().catch(()=>console.log('FINAL ERROR'));
+  console.log("Message sent: %s", info.messageId);
+}

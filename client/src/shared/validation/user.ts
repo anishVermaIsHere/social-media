@@ -33,3 +33,9 @@ export const recoverEmailSchema = object({
   email: string({ required_error: "Email is required"})
     .email({ message: "Enter a valid email" })
 });
+
+export const OTPSchema = object({
+  otp: string({ required_error: "OTP is required"})
+  .min(6, { message: "OTP should be of 6 digits" })
+  .max(6, { message: "OTP shoudl be of 6 digits" }),
+});

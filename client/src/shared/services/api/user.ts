@@ -19,6 +19,9 @@ const userAPI={
     },
     async recoverAccount(email: string){
         return await axios.post(`${import.meta.env.VITE_BASE_URL}${URL}/recover-account`, { email });
+    },
+    async sendOTP(data: any){
+        return await axios.post(`${import.meta.env.VITE_BASE_URL}${URL}/otp`, data);
     }
 };
 

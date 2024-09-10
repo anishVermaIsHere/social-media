@@ -57,10 +57,10 @@ export default function PostCard({ post }: { post: IPost }) {
     },
     onSettled:async(_,error)=>{
       if(error){
-          // toast.error(`${error}`);
+        // toast.error(`${error}`);
       }
       else { 
-          queryClient.invalidateQueries({ queryKey: ['post'] }); 
+        queryClient.invalidateQueries({ queryKey: ['post'] }); 
       }
     }
   });
@@ -70,16 +70,16 @@ export default function PostCard({ post }: { post: IPost }) {
   }
   
   const handleLike=async(postId: string)=>{
-      setToggle(!toggle);
-      if(toggle){
-        if(like>0){
-          setLike(like-1);
-        }
-        return await postAPI.unlike(postId);
-      } else {
-        setLike(like+1);
-        return await postAPI.like(postId);
+    setToggle(!toggle);
+    if(toggle){
+      if(like>0){
+        setLike(like-1);
       }
+      return await postAPI.unlike(postId);
+    } else {
+      setLike(like+1);
+      return await postAPI.like(postId);
+    }
   };
 
   const handleClose = (event: React.MouseEvent) => {
@@ -103,21 +103,22 @@ export default function PostCard({ post }: { post: IPost }) {
 
   return (
     <Grid item xs={12}>
-    <Card sx={{ maxWidth: '100%', bgcolor:'#fff', position:'relative', overflow:'auto' }} elevation={1}> 
+    <Card sx={{ maxWidth: '100%', bgColor:'#fff', position:'relative', overflow:'auto' }} elevation={1}> 
       <NavLink style={{ textDecoration:'none', color:'inherit' }} to={`${USER}/${FEEDS}/${post._id}`}> 
         <CardHeader
           sx={{ textAlign:'left' }}
           avatar={
-              <UserAvatar name={getNameFirstLetter(postUser.firstName)} /> 
+            <UserAvatar name={getNameFirstLetter(postUser.firstName)} /> 
           }
           action={
             <IconButton 
-            aria-label="settings" 
-            onClick={(e)=> e.preventDefault()}> 
+              aria-label="settings" 
+              onClick={(e)=> e.preventDefault()}
+            > 
               <MoreVertIcon /> 
             </IconButton> 
           }
-          title={<span style={{ fontWeight: '600', marginRight:'0.5rem' }}>{`${postUser.firstName} ${postUser.lastName}`}</span> }
+          title={<span style={{ fontWeight: '600', marginRight:'0.5rem' }}>{`${postUser.firstName} ${postUser.lastName}`}</span>}
           subheader={dayjs(createdAt).format('MMM DD, YYYY')}
         />
       </NavLink>
@@ -155,7 +156,9 @@ export default function PostCard({ post }: { post: IPost }) {
         <Typography variant="body2" color="text.primary">
           {content}
         </Typography>
+        <Box sx={{ display:'flex', flexWrap: 'wrap' }}>
         {tags?.map((tag, index)=><Link key={index} style={{ marginRight: '0.4rem'}}>#{tag}</Link>)}
+        </Box>
         {post.comments.length && path!==`${USER}/${FEEDS}/${post._id}` ? <NavLink to={`${USER}/${FEEDS}/${post._id}`} style={{ textDecoration:'none', color:'inherit' }} >
           <Typography align='left' sx={{ color: 'grey', fontSize: '0.9rem', cursor:'pointer', width:'auto', '&:hover': { textDecoration: 'underline' }} }>
             {post.comments.length > 1 ? `${post.comments.length} comments`: `${post.comments.length} comment`} 
@@ -170,7 +173,6 @@ export default function PostCard({ post }: { post: IPost }) {
         {path===`${USER}/${FEEDS}/${post._id}` && post.comments.length ?
         <>
         <Divider sx={{ my: 2 }} />
-     
 
         <Box>
           {
@@ -191,20 +193,17 @@ export default function PostCard({ post }: { post: IPost }) {
               <div onClick={handleOptions}>
                 <MoreHorizIcon sx={{ color: 'grey', cursor: 'pointer' }} />
               </div>
-              
               </Box>
 
               <OptionMenu 
-              open={open} 
-              anchorEl={anchorEl} 
-              handleClose={handleClose} 
-              slugId={comt._id} 
-              deleteHandler={deleteHandler}
-              editHandler={editHandler}
+                open={open} 
+                anchorEl={anchorEl} 
+                handleClose={handleClose} 
+                slugId={comt._id} 
+                deleteHandler={deleteHandler}
+                editHandler={editHandler}
               />
               </div>
-
-
             ))
           }
         </Box>

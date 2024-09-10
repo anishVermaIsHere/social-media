@@ -6,15 +6,35 @@ import resMessage from "../shared/i18n/msgreader.js";
 import { HTTP_CODES } from "../shared/constants/constant.js";
 import UserModel from "../database/models/user.js";
 import PostModel from "../database/models/post.js";
+import crypto from "crypto";
 import { v4 as uuidv4 } from 'uuid';
+import { sendMail } from "../shared/utils/mailer.js";
 
-const { CREATE, SUCCESS, RESOURCE_NOT_FOUND }=HTTP_CODES;
+const { CREATE, SUCCESS, RESOURCE_NOT_FOUND, UNAUTHORIZE }=HTTP_CODES;
 
+
+const generateOTP=(length = 6)=>{
+    const digits = '0123456789';
+    let otp = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = crypto.randomInt(0, digits.length);
+        otp += digits[randomIndex];
+    }
+    return otp;
+};
+
+interface AccRecoverInfo{
+    otp: string;
+    requestId: string;
+    currentTime: number;
+}
+
+let accRecoveryInfo = {} as AccRecoverInfo;
 
 export const userController={
     async search(req: Request, res: Response){
         try {
-            const data=req.body;
+            const data=req.body; 
             const users = await UserModel.aggregate([
                 {
                     $match: {
@@ -127,17 +147,50 @@ export const userController={
             throw new Error(error.message);
         }
     },
-    async recoverAccount(req: Request, res: Response){
+    async sendMailToRecoverAccount(req: Request, res: Response){
         try {
             const email=req.body.email;
             const userDoc=await UserModel.findOne({ email });
+            const expiresAt=new Date(new Date().getTime() + 10*60*1000);
+            const requestId=uuidv4();
             if(userDoc && userDoc._id){
-                
+                const otp=generateOTP();
+                await sendMail(email, otp);
+                accRecoveryInfo.otp=otp;
+                accRecoveryInfo.requestId=requestId;
+                accRecoveryInfo.currentTime=new Date().getTime();
             }
-            return res.status(SUCCESS).json({ uid: uuidv4() });
+
+            return res.status(SUCCESS).json({ requestId, expiresAt: expiresAt.getTime() });
         } catch (error: any) {
-            console.log('API: error while recover account', error.message);
+            console.log('API: error while sending email to recover account', error.message);
+            throw new Error(error.message);
+        }
+    },
+    async sendOTPToRecoverAccount(req: Request, res: Response){
+        try {
+            const otp=req.body.otp;
+            const reqId=req.body.reqId;
+            const expiry=req.body.expiry;
+            
+            if(otp === accRecoveryInfo.otp && reqId === accRecoveryInfo.requestId){
+                const diffTime=accRecoveryInfo.currentTime-expiry;
+                if(diffTime < accRecoveryInfo.currentTime){
+                    // accRecoveryInfo = {} as AccRecoverInfo
+                    return res.status(SUCCESS).json({ success: true, message: "OTP verified successfully" });
+                } else { 
+                    // accRecoveryInfo = {} as AccRecoverInfo
+                    return res.status(UNAUTHORIZE).json({ message: "OTP not valid" });
+                }
+
+            } else {
+                // accRecoveryInfo = {} as AccRecoverInfo
+                return res.status(UNAUTHORIZE).json({ message: "Invalid credentials" });
+            }
+           
+        } catch (error: any) {
+            console.log('API: error while sending otp to recover account', error.message);
             throw new Error(error.message);
         }
     }
-}
+};
