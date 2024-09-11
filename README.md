@@ -1,4 +1,20 @@
-# MERN Social Media App with using MUI 
+# MERN Social Media App with using MUI, Redux Toolkit, React Hook Form  
+
+
+**Features**
+
+- Fully responsive UI
+- Lists of posts,
+- Single post details page,
+- Add, Edit and Delete posts,
+- Add, edit and delete comments,
+- Like/Unlike others posts,
+- Load more button for loading more posts with server side pagination,
+- Added cloudinary for image uploading and deleting,
+- Follow/Unfollow users by search their names,
+- Implemented reset password feature through OTP 
+- Added user profile page (to manage their posts)
+
 
 *To start application: You have to install first NodeJS from here [NodeJS download](https://nodejs.org/en/download/prebuilt-installer) in your system and after installation follow these steps as below*
 

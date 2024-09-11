@@ -1,20 +1,19 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/redux/store/store";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Grid, Button, IconButton } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { Grid, Button } from "@mui/material";
 import Item from "../../../components/Item";
 import PostCard from "../../posts/components/PostCard";
 import Spinner from "@/shared/widgets/Spinner";
 import postAPI from "@/shared/services/api/post";
 import AlertCard from "@/shared/widgets/AlertCard";
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'; 
 import NoData from "@/shared/widgets/NoData";
 import { addPosts } from "@/redux/slices/post"; 
 
 
 const Feed = () => {
   const [page, setPage]=useState<number>(1);
-  const queryClient=useQueryClient();
+  // const queryClient=useQueryClient();
   const { isPending, error, isError, isSuccess, data } = useQuery({
     queryKey: ["posts", page],
     queryFn: async () => await postAPI.fetch(page)
@@ -93,8 +92,7 @@ const Feed = () => {
           {postState?.map((post: any) => {            
             return <PostCard key={post._id} post={post} />
           })}
-          {page > totalPages ? 
-            "" : 
+          {page < totalPages &&
             <Button variant="contained" sx={{ margin:'3rem auto' }} onClick={handleLoadMore}>
               Load more...
             </Button>

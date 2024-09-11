@@ -82,8 +82,8 @@ export const postController={
         try {
             const user=decodedUser(req);
             let page=1;
-            let limit=1;
-            let totalPages=1;
+            let limit=10;
+            let totalPages=10;
             
             if(req.query.page){
                 page=parseInt(req.query.page as string);
@@ -95,7 +95,7 @@ export const postController={
             const allUsers=following.map(u=>u.following?.toString());
 
             const postResults=await Promise.all([
-                PostModel.find({ user: { $in: [user.id, ...allUsers] } }).populate("user", ["-password", "-createdAt", "-updatedAt"]).sort('-createdAt'),
+                PostModel.find({ user: { $in: [user.id, ...allUsers] } }).populate("user", ["-password", "-createdAt", "-updatedAt"]).sort('-createdAt').limit(limit),
                 likeController.get('user', user.id, res),
                 commentController.getById('user', user.id)
             ]);
@@ -112,7 +112,7 @@ export const postController={
                 return res.status(RESOURCE_NOT_FOUND).json({ error: 'Post not found' });
             }
             totalPages=Math.ceil(likedPosts.length/limit);
-            return res.status(SUCCESS).json({ posts: likedPosts.slice((page-1)*limit, page*limit), totalPages });
+            return res.status(SUCCESS).json({ posts: likedPosts, totalPages });
 
         } catch (error:any) {
             console.log('API: error while getting post of logined user', error.message);
