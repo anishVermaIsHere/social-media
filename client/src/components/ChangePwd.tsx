@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,8 +10,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme } from '@mui/material/styles';
 import { useAppDispatch} from '../redux/store/store';
-import userAPI from '../shared/services/api/auth';
+import userAPI from '../shared/services/api/user';
 import { handleSnackBar } from '../redux/slices/snackbar'; 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { changePwdSchema } from '@/shared/validation/user';
+import { z } from 'zod';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/routes/routeslinks';
 
 
 export const theme = createTheme({
@@ -22,20 +27,27 @@ export const theme = createTheme({
     },
 });
 
-export default function ForgotPassword() {
-  const { register, handleSubmit, reset, formState:{ errors} }=useForm();
+
+type Schema=z.infer<typeof changePwdSchema>;
+
+
+export default function ChangePwd({ email }: { email: string }) {
+  const { register, handleSubmit, reset, formState:{ errors} }=useForm<Schema>({
+    resolver: zodResolver(changePwdSchema)
+  });
   const dispatch=useAppDispatch();
+  const navigate=useNavigate();
   
-  const onSubmit= async(data:any) => {
+  const onSubmit: SubmitHandler<Schema>= async(data:Schema) => {
     try {
-        console.log('data', data);
-    //   const res= await userAPI.register(data);
-    //   if(res.status===201){
-    //     dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: res.data.message }));
-    //   }
-    //   else {
-    //     dispatch(handleSnackBar({ snackOpen: true, snackType: "warning", snackMessage: res.data.message }));
-    //   } 
+      const res= await userAPI.resetPwd({ password: data.password, email });
+      if(res.status===200){
+        dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: res.data.message }));
+        navigate(ROUTES.LOGIN); 
+      }
+      else {
+        dispatch(handleSnackBar({ snackOpen: true, snackType: "warning", snackMessage: res.data.message }));
+      } 
     } catch (error:any) {
       dispatch(handleSnackBar({ snackOpen: true, snackType: "error", snackMessage: error.message }));
     }

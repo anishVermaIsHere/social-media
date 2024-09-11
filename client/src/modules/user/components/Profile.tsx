@@ -43,7 +43,8 @@ const Profile = () => {
             >
               <CardMedia
                 component="img"
-                image="https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/385fdc07-325d-49f4-b941-2d39634f1cdb/2876b1ae-c518-416a-9b1f-0dadd6fa45bb.png"
+                image="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                // image="https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/385fdc07-325d-49f4-b941-2d39634f1cdb/2876b1ae-c518-416a-9b1f-0dadd6fa45bb.png"
                 alt="profile pic"
               />
             </Card>

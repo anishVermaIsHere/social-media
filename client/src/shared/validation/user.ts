@@ -39,3 +39,15 @@ export const OTPSchema = object({
   .min(6, { message: "OTP should be of 6 digits" })
   .max(6, { message: "OTP shoudl be of 6 digits" }),
 });
+
+export const changePwdSchema = object({
+  password: string({ required_error: "Password is required"})
+    .min(8, { message: "Password should be of minimum 8 characters" })
+    .max(16, { message: "Password should be of minimum 16 characters" }),
+  repeatPassword: string({ required_error: "Password is required"})
+  .min(8, { message: "Repeat password must be atleast 8 characters" })
+
+}).refine((data) => data.password === data.repeatPassword, {
+  message: "Password don't match",
+  path: ["repeatPassword"],
+});

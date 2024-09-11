@@ -10,9 +10,9 @@ function generateEmailTemplate(otp: string) {
        <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>2Post OTP page</title>
         <style>
-        *{
-        font-family: "Arial";
-        }
+          *{
+          font-family: "Arial";
+          }
             h2 {
             background-color:#3f51b5;
             color:#fff;

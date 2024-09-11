@@ -5,7 +5,7 @@ export const Homepage = lazy(()=>import('@/pages/Homepage'));
 export const Loginpage = lazy(()=>import('@/pages/Loginpage'));
 export const Registerpage = lazy(()=>import('@/pages/Registerpage'));
 export const RecoverAccPage =  lazy(()=>import('@/pages/RecoverAccPage'));
-export const ForgotPasswordPage =  lazy(()=>import('@/pages/ForgotPwdPage'));
+export const ChangePwdPage =  lazy(()=>import('@/pages/ChangePwdPage'));
 export const Protected = lazy(()=>import('@/modules/user/components/Protected'));
 export const Feed = lazy(()=>import('@/modules/user/components/Feed'));
 export const Post = lazy(()=>import('@/modules/user/components/Post'));

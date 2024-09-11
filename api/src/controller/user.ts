@@ -9,9 +9,9 @@ import PostModel from "../database/models/post.js";
 import crypto from "crypto";
 import { v4 as uuidv4 } from 'uuid';
 import { sendMail } from "../shared/utils/mailer.js";
+import encrypt from "../config/encrypt.js";
 
 const { CREATE, SUCCESS, RESOURCE_NOT_FOUND, UNAUTHORIZE }=HTTP_CODES;
-
 
 const generateOTP=(length = 6)=>{
     const digits = '0123456789';
@@ -26,7 +26,7 @@ const generateOTP=(length = 6)=>{
 interface AccRecoverInfo{
     otp: string;
     requestId: string;
-    currentTime: number;
+    expiry: number;
 }
 
 let accRecoveryInfo = {} as AccRecoverInfo;
@@ -158,7 +158,7 @@ export const userController={
                 await sendMail(email, otp);
                 accRecoveryInfo.otp=otp;
                 accRecoveryInfo.requestId=requestId;
-                accRecoveryInfo.currentTime=new Date().getTime();
+                accRecoveryInfo.expiry=expiresAt.getTime();
             }
 
             return res.status(SUCCESS).json({ requestId, expiresAt: expiresAt.getTime() });
@@ -171,25 +171,39 @@ export const userController={
         try {
             const otp=req.body.otp;
             const reqId=req.body.reqId;
-            const expiry=req.body.expiry;
             
             if(otp === accRecoveryInfo.otp && reqId === accRecoveryInfo.requestId){
-                const diffTime=accRecoveryInfo.currentTime-expiry;
-                if(diffTime < accRecoveryInfo.currentTime){
-                    // accRecoveryInfo = {} as AccRecoverInfo
+                const currentTime=new Date().getTime();
+                const diffTime=currentTime-accRecoveryInfo.expiry;
+                if(diffTime < currentTime){
+                    accRecoveryInfo = {} as AccRecoverInfo
                     return res.status(SUCCESS).json({ success: true, message: "OTP verified successfully" });
                 } else { 
-                    // accRecoveryInfo = {} as AccRecoverInfo
+                    accRecoveryInfo = {} as AccRecoverInfo
                     return res.status(UNAUTHORIZE).json({ message: "OTP not valid" });
                 }
 
             } else {
-                // accRecoveryInfo = {} as AccRecoverInfo
+                accRecoveryInfo = {} as AccRecoverInfo
                 return res.status(UNAUTHORIZE).json({ message: "Invalid credentials" });
             }
            
         } catch (error: any) {
             console.log('API: error while sending otp to recover account', error.message);
+            throw new Error(error.message);
+        }
+    },
+    async changePassword(req: Request, res: Response){
+        try {
+            const { password, email }=req.body;
+            const user = await UserModel.findOne({ email});
+            if(user && user._id) {
+               const encryptedPassword = encrypt.hashPassword(password);
+               await UserModel.updateOne({ _id: user._id }, { $set: { password: encryptedPassword }});
+               return res.status(SUCCESS).json({ message: resMessage.readMessage("user", "updatesuccess") });
+            }
+        } catch (error: any) {
+            console.log('API: error while reset password', error.message);
             throw new Error(error.message);
         }
     }

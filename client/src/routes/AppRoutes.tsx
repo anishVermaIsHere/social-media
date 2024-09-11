@@ -2,11 +2,11 @@ import { Suspense } from 'react';
 import {Routes, Route} from 'react-router-dom';
 import { ROUTES } from './routeslinks';
 import Spinner from '@/shared/widgets/Spinner';
-import { Homepage, Registerpage, RecoverAccPage, ForgotPasswordPage, Protected, Feed, Layout, Profile, Create, ErrorPage, Post, SearchResult, EditPost } from '@/routes/LazyComponents';
+import { Homepage, Registerpage, RecoverAccPage, Protected, Feed, Layout, Profile, Create, ErrorPage, Post, SearchResult, EditPost } from '@/routes/LazyComponents';
 
 
 const AppRoutes= () => {
-  const { REGISTER, RECOVER_ACC, RESET_PWD, FEEDS,PROFILE,CREATE_POST, POST, SEARCH, EDIT_POST }=ROUTES;
+  const { REGISTER, RECOVER_ACC, FEEDS,PROFILE,CREATE_POST, POST, SEARCH, EDIT_POST }=ROUTES;
 
   return (
     <Routes>
@@ -14,7 +14,6 @@ const AppRoutes= () => {
           <Route index path="/" element={<Suspense fallback={<Spinner />}><Homepage /></Suspense>} />
           <Route path={REGISTER} element={<Suspense fallback={<Spinner />}><Registerpage /></Suspense>} />
           <Route path={RECOVER_ACC} element={<Suspense fallback={<Spinner />}><RecoverAccPage /></Suspense>} />
-          <Route path={RESET_PWD} element={<Suspense fallback={<Spinner />}><ForgotPasswordPage /></Suspense>} />
           <Route path='/user' element={<Suspense fallback={<Spinner />}><Layout /></Suspense>}>
             <Route path={FEEDS} element={<Suspense fallback={<Spinner />}><Feed /></Suspense>} />
             <Route path={POST} element={<Suspense fallback={<Spinner />}><Post /></Suspense>} />

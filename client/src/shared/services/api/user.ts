@@ -22,6 +22,9 @@ const userAPI={
     },
     async sendOTP(data: any){
         return await axios.post(`${import.meta.env.VITE_BASE_URL}${URL}/otp`, data);
+    },
+    async resetPwd(data: any){
+        return await axios.post(`${import.meta.env.VITE_BASE_URL}${URL}/change-pwd`, data);
     }
 };
 

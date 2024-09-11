@@ -39,21 +39,24 @@ export default function Login() {
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<Schema> = async (data: Schema) => {
-    setLoading(true);
-    const res = await userAPI.login(data);
 
-    if (res.status === 200) {
-      dispatch(handleAuth(res.data));
-      navigate(`/user/${ROUTES.FEEDS}`);
-      dispatch(
-        handleSnackBar({
-          snackOpen: true,
-          snackType: "success",
-          snackMessage: res.data.message,
-        })
-      );
-      setLoading(false);
-    } else {
+    try {
+      setLoading(true);
+      const res = await userAPI.login(data);
+  
+      if (res.status === 200) {
+        dispatch(handleAuth(res.data));
+        navigate(`/user/${ROUTES.FEEDS}`);
+        dispatch(
+          handleSnackBar({
+            snackOpen: true,
+            snackType: "success",
+            snackMessage: res.data.message,
+          })
+        );
+        setLoading(false);
+      }
+    } catch (error) {
       dispatch(
         handleSnackBar({
           snackOpen: true,
@@ -63,6 +66,7 @@ export default function Login() {
       );
       setLoading(false);
     }
+    
     reset();
   };
 

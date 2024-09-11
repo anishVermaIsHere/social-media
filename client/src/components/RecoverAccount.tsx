@@ -12,24 +12,22 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useAppDispatch} from '../redux/store/store';
+import { ChangePwdPage } from '@/routes/LazyComponents';
 import userAPI from '../shared/services/api/user';
 import { handleSnackBar } from '../redux/slices/snackbar'; 
 import { recoverEmailSchema, OTPSchema } from '@/shared/validation/user';
 import Spinner from '@/shared/widgets/Spinner';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/routes/routeslinks';
 
 
 type Schema = z.infer<typeof recoverEmailSchema>;
-type otpSchema =  z.infer<typeof OTPSchema>
+type otpSchema =  z.infer<typeof OTPSchema>;
 
 export default function RecoverAccount(){
   const dispatch=useAppDispatch();
-  const navigate=useNavigate();
-  const [hiddenEmail, setHiddenEmail]=useState('');
-  const [accRecoverInfo, setAccRecoverInfo]=useState({} as { reqId: string, expiry: number });
+  const [accRecoverInfo, setAccRecoverInfo]=useState({} as { reqId: string, expiry: number, email: string });
   const [isLoading, setIsLoading]=useState(false);
-  const { register, handleSubmit, reset, formState:{ errors} }=useForm({ resolver: zodResolver(hiddenEmail ? OTPSchema : recoverEmailSchema)});
+  const [isVerified, setIsVerified]=useState(false);
+  const { register, handleSubmit, reset, formState:{ errors} }=useForm<Schema & otpSchema>({ resolver: zodResolver(accRecoverInfo.email ? OTPSchema : recoverEmailSchema)});
 
   
   const submitEmail:SubmitHandler<Schema> = async(data:Schema) => {
@@ -37,34 +35,41 @@ export default function RecoverAccount(){
       setIsLoading(true);
       const res= await userAPI.recoverAccount(data.email);
       if(res?.data){
-        setAccRecoverInfo({ reqId: res.data.requestId, expiry: res.data.expiresAt });
-        setHiddenEmail(data.email);
+        setAccRecoverInfo({ reqId: res.data.requestId, expiry: res.data.expiresAt, email: data.email });
+        setAccRecoverInfo({ ...accRecoverInfo, email: data.email });
       }
       setIsLoading(false);
     } catch (error:any) {
       dispatch(handleSnackBar({ snackOpen: true, snackType: "error", snackMessage: error.message }));
+      setIsLoading(false);
     }
     reset();
   };
   
   const submitOTP:SubmitHandler<otpSchema>=async(data: otpSchema)=>{
     try {
+      setIsLoading(true);
       const res= await userAPI.sendOTP({ otp: data.otp, reqId: accRecoverInfo.reqId, expiry: accRecoverInfo.expiry });
-      console.log('res',res);
       if(res.status===200){
         dispatch(handleSnackBar({ snackOpen: true, snackType: "success", snackMessage: res.data.message}));
-        navigate(ROUTES.RESET_PWD);
+        setIsVerified(true);
+        setIsLoading(false);
       }
     } catch (error:any) {
       dispatch(handleSnackBar({ snackOpen: true, snackType: "error", snackMessage: error.message }));
+      setIsLoading(false);
     }
     reset();
+  }
+
+  if(isVerified){
+    return <ChangePwdPage email={accRecoverInfo.email} />
   }
 
   return isLoading ? 
         <Spinner />
         :
-        <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box mt={20}>
           <Avatar sx={{ m: 1, bgcolor: 'primary.main', mx:'auto'}}>
@@ -76,14 +81,14 @@ export default function RecoverAccount(){
           <Typography component="h5">
             Please enter your email to send the secret code
           </Typography>
-          {hiddenEmail && <Typography component='p' align='center'>Secret code has been sent on <strong>{hiddenEmail}</strong></Typography>}
+          {accRecoverInfo.email && <Typography component='p' align='center'>Secret code has been sent on <strong>{accRecoverInfo.email}</strong></Typography>}
 
           <Box 
           component="form" sx={{ mt:3 }} 
           noValidate 
-          onSubmit={handleSubmit(hiddenEmail ? submitOTP : submitEmail)}>
+          onSubmit={handleSubmit(accRecoverInfo.email ? submitOTP : submitEmail)}>
             <Grid container spacing={2}>
-              {!hiddenEmail ? 
+              {!accRecoverInfo.email ? 
               <Grid item xs={12}>
                 <TextField
                   size="small"
