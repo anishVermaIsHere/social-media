@@ -33,8 +33,14 @@ export default function Login() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Schema>({ resolver: zodResolver(loginSchema) });
+  } = useForm<Schema>({ 
+    defaultValues: {
+      email: import.meta.env.VITE_DEFAULT_EMAIL,
+      password: import.meta.env.VITE_DEFAULT_PWD,
+    },
+    resolver: zodResolver(loginSchema) });
   const [loading, setLoading] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -43,7 +49,6 @@ export default function Login() {
     try {
       setLoading(true);
       const res = await userAPI.login(data);
-  
       if (res.status === 200) {
         dispatch(handleAuth(res.data));
         navigate(`/user/${ROUTES.FEEDS}`);
@@ -117,7 +122,7 @@ export default function Login() {
             required
             fullWidth
             label="Password"
-            type="password"
+            type={ showPwd ? "text" : "password"}
             id="password"
             {...register("password")}
             error={errors.password && Boolean(errors.password?.message)}
@@ -125,8 +130,8 @@ export default function Login() {
           />
 
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            control={<Checkbox value="showPwd" onChange={()=>setShowPwd(!showPwd)} color="primary" />}
+            label="Show password"
           />
           <Button
             type="submit"

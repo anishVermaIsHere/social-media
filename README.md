@@ -27,6 +27,9 @@ git clone -b dev https://github.com/anishVermaIsHere/social-media.git
 
 ```bash
 VITE_BASE_URL='http://localhost:5000'
+VITE_DEFAULT_EMAIL=davidpaul@test.com
+VITE_DEFAULT_PWD=david1234
+
 ```
 3. And also create another `.env` file into `api` folder.
 
